@@ -13,11 +13,12 @@ Hacker.prototype = {
     if (text) {
       var obj = JSON.parse(text);
       this.reputation = obj.reputation;
-      // name
-      // contact
-      // address []
+      this.hackername = obj.hackername;
+      this.address = obj.address;
     } else {
-      this.reputation = 3; // initial reputation after 3 strikes you're 0 then it's bad
+      this.reputation = "";
+      this.hackername = "";
+      this.address = "";
     }
   }
 };
@@ -63,7 +64,6 @@ Hackathon.prototype = {
   },
 
   parse: function(text) {
-    if (text) {
       var obj = JSON.parse(text);
       this.id = obj.id;
       this.name = obj.name;
@@ -133,6 +133,7 @@ Sponsor.prototype = {
 };
 
 var NebHackathonContract = function() {
+
   LocalContractStorage.defineMapProperties(this, {
     allHackers: {
       parse: function(value) {
@@ -185,6 +186,39 @@ NebHackathonContract.prototype = {
     this.allHackathons.set(newHackathon.id, newHackathon);
     var result = this.allHackathons;
     return result;
+  }
+
+  createHacker: function(username, address) {
+    if (username === "" || address === ""){
+            throw new Error("empty username / address");
+    }
+
+    if (username.length > 64 || address.length > 64){
+        throw new Error("username / address exceed limit length")
+    }
+
+    var hacker = this.hackers.get(username);
+    if (hacker){
+      throw new Error("hacker username has been occupied");
+    }
+
+    hacker = new Hacker();
+    hacker.username = username;
+    hacker.address = address;
+    dictItem.value = value;
+    this.hackers.put(username, hacker);
+  }
+
+  getHacker: function(username) {
+    username = username.trim();
+    if (username === "" ) {
+        throw new Error("empty username")
+    }
+    var hacker = this.hackers.get(username);
+    if (!hacker){
+      throw new Error("hacker username has been occupied");
+    }
+    return hacker; 
   }
 };
 
