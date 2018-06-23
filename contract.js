@@ -36,6 +36,7 @@ Team.prototype = {
       var obj = JSON.parse(text);
       this.id = obj.id;
       this.teamName = obj.teamName;
+      this.leader = obj.leader;
       this.hackers = obj.hackers;
       this.reward = obj.reward;
       this.description = obj.description;
@@ -43,6 +44,7 @@ Team.prototype = {
     } else {
       this.id = 0;
       this.teamName = "";
+      this.leader = "";
       this.hackers = [];
       this.reward = new BigNumber(0);
       this.description = "";
@@ -181,8 +183,8 @@ NebHackathonContract.prototype = {
   createHackathon: function(hackathonInfo) {
     var newHackathon = new Hackathon(hackathonInfo);
     this.allHackathons.set(newHackathon.id, newHackathon);
-    result = this.allHackathons;
-    return result
+    var result = this.allHackathons;
+    return result;
   }
 };
 
