@@ -34,18 +34,19 @@ Team.prototype = {
   parse: function(text) {
     if (text) {
       var obj = JSON.parse(text);
+      this.id = obj.id;
+      this.teamName = obj.teamName;
       this.hackers = obj.hackers;
-      this.scores = obj.scores;
-      this.avgScore = obj.avgScore;
       this.reward = obj.reward;
-      // id
-      // description
-      // url
+      this.description = obj.description;
+      this.url = obj.url;
     } else {
+      this.id = 0;
+      this.teamName = "";
       this.hackers = [];
-      this.scores = [];
-      this.avgScore = new BigNumber(0);
       this.reward = new BigNumber(0);
+      this.description = "";
+      this.url = "";
     }
   }
 };
@@ -157,7 +158,10 @@ var NebHackathonContract = function() {
     }
   });
   LocalContractStorage.defineProperties(this, {
-    sayHack: ''
+    sayHack: '',
+    curHackerId: 0,
+    curTeamId: 0,
+    curHackathonId: 0
   });
 };
 
