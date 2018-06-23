@@ -58,8 +58,9 @@
 
 
   var nebPay = new NebPay();
-  var account = new Wallet.Account();
-  account.setPrivateKey('f43213c3d0077b05c651684557d528652a6dbeee38a66b282273254ead06ff8d');
+  var account = new Wallet.Account(
+    '249e8e7a8ca2db4cbe29e2f2f42a2b2740b35408e36f26ed7a1c2561abcd3799'
+  );
 
   const neb = new Wallet.Neb();
   neb.setRequest(new HttpRequest('https://testnet.nebulas.io'));
@@ -77,7 +78,7 @@
   // mainnet
   // var contractAddr = "n1tMicsrXs7m3fmtywC9zjMDVUBYJBAg5p3";
   // testnet
-  var contractAddr = "n21fghvdRE2bMAAUyExRhkQGy6TvZtgUNfb";
+  var contractAddr = "n1vszNJzakEczQqvA8BeCv9asuxLWZuzrt6";
 
   $(document).ready(function () {
 
@@ -114,27 +115,6 @@
           });
       });
 
-
-
-      // neb.api.call(from.to, toAddress, value, '0', gasPrice, gasLimit, contract).then(function (resp) {
-      //   console.log(resp);
-      //   if (resp.execute_err.length > 0) {
-      //     throw new Error(resp.execute_err);
-      //   }
-      //   var result = JSON.parse(resp.result);
-      //   if (!result) {
-      //     throw new Error("访问合约API出错");
-      //   }
-      //   return result;
-      // });
-
-      // nebPay.simulateCall(to, value, 'get', callArgs, {
-      //   listener: callbackListener
-      // });
-
-      // function callbackListener(resp) {
-      //   console.log("resp: " + JSON.stringify(resp));
-      // }
 
     });
   });
