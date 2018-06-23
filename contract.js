@@ -1,5 +1,35 @@
 'use strict';
 
+var Hacker = function(obj) {
+  this.parse(obj);
+};
+
+Hacker.prototype = {
+  toString: function() {
+    return JSON.stringify(this);
+  },
+
+/*
+      
+  }
+
+  stringify: function (hacker) {
+      return hacker.toString();
+*/
+  parse: function(text) {
+    if (text) {
+      var obj = JSON.parse(text);
+      this.reputation = obj.reputation;
+      this.hackername = obj.hackername;
+      this.address = obj.address;
+    } else {
+      this.reputation = "";
+      this.hackername = "";
+      this.address = "";
+    }
+  }
+};
+
 var Team = function(obj) {
   this.parse(obj);
 };
@@ -12,46 +42,113 @@ Team.prototype = {
   parse: function(text) {
     if (text) {
       var obj = JSON.parse(text);
-      this.players = obj.players;
-      this.scores = obj.scores;
-      this.avgScore = obj.avgScore;
+      this.id = obj.id;
+      this.teamName = obj.teamName;
+      this.hackers = obj.hackers;
       this.reward = obj.reward;
-      // id
-      // description
-      // url
+      this.description = obj.description;
+      this.url = obj.url;
     } else {
-      this.players = [];
-      this.scores = [];
-      this.avgScore = new BigNumber(0);
+      this.id = 0;
+      this.teamName = "";
+      this.hackers = [];
       this.reward = new BigNumber(0);
+      this.description = "";
+      this.url = "";
     }
   }
 };
 
-var Hacker = function(obj) {
+var Hackathon = function(obj) {
   this.parse(obj);
 };
 
-Hacker.prototype = {
+Hackathon.prototype = {
   toString: function() {
     return JSON.stringify(this);
   },
 
   parse: function(text) {
       var obj = JSON.parse(text);
-      this.hackername = obj.hackername;
-      this.address = obj.address;
+      this.id = obj.id;
+      this.name = obj.name;
+      this.desc = obj.desc;
+      this.url = obj.url;
+      this.teams = obj.teams;
+      this.votes = obj.votes;
+      this.rewardPool = obj.rewardPool;
+      this.sponsors = obj.sponsors;
+    } else {
+      this.id = 0;
+      this.name = '';
+      this.desc = '';
+      this.url = '';
+      this.teams = [];
+      this.votes = [];
+      this.rewardPool = new BigNumber(0);
+      this.sponsors = [];
+    }
   }
+};
 
-  stringify: function (hacker) {
-      return hacker.toString();
+var Vote = function(obj) {
+  this.parse(obj);
+};
+
+Vote.prototype = {
+  toString: function() {
+    return JSON.stringify(this);
+  },
+  parse: function(text) {
+    if (text) {
+      var obj = JSON.parse(text);
+      this.from = obj.from;
+      this.hackthonId = obj.hackthonId;
+      this.teamId = obj.teamId;
+      this.value = obj.value;
+    } else {
+      this.from = '';
+      this.hackthonId = 0;
+      this.teamId = 0;
+      this.value = new BigNumber(0);
+    }
+  }
+};
+
+var Sponsor = function(obj) {
+  this.parse(obj);
+};
+
+Sponsor.prototype = {
+  toString: function() {
+    return JSON.stringify(this);
+  },
+  parse: function(text) {
+    if (text) {
+      var obj = JSON.parse(text);
+      this.name = obj.name;
+      this.contact = obj.contact;
+      this.value = obj.value;
+    } else {
+      this.name = '';
+      this.contact = '';
+      this.value = new BigNumber(0);
+    }
   }
 };
 
 var NebHackathonContract = function() {
 
   LocalContractStorage.defineMapProperties(this, {
-    teams: {
+    allHackers: {
+      parse: function(value) {
+        return new Hacker(value);
+      },
+      stringify: function(o) {
+        return o.toString();
+      }
+    },
+    allTeams: {
       parse: function(value) {
         return new Team(value);
       },
@@ -59,9 +156,9 @@ var NebHackathonContract = function() {
         return o.toString();
       }
     },
-    hackers: {
+    allHackathons: {
       parse: function(value) {
-        return new Hacker(value);
+        return new Hackathon(value);
       },
       stringify: function(o) {
         return o.toString();
@@ -69,9 +166,10 @@ var NebHackathonContract = function() {
     }
   });
   LocalContractStorage.defineProperties(this, {
-    depositRequirement: 0,
-    totalShortnameCount: 0,
-    sayHack: ''
+    sayHack: '',
+    curHackerId: 0,
+    curTeamId: 0,
+    curHackathonId: 0
   });
 };
 
@@ -86,7 +184,13 @@ NebHackathonContract.prototype = {
   getTeamReward: function(_id) {
     var team = this.teams.get(_id);
     var result = team.reward;
-    return;
+    return result;
+  },
+  createHackathon: function(hackathonInfo) {
+    var newHackathon = new Hackathon(hackathonInfo);
+    this.allHackathons.set(newHackathon.id, newHackathon);
+    result = this.allHackathons;
+    return result
   }
 
   createHacker: function(username, address) {
