@@ -68,7 +68,7 @@
   </div>
 
   <!-- Bootstrap CSS -->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
     crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
     crossorigin="anonymous"></script>
@@ -153,6 +153,34 @@
 
       console.log("Handler for .submit() called.: " + JSON.stringify(team));
       event.preventDefault();
+
+      var from = account.getAddressString();
+      var to = contractAddr;
+      var value = '0';
+      var callArgs = JSON.stringify([team.teamName, team.teamDesciption, team.teamURL]);
+      console.log('=> callArgs: ' + callArgs);
+      const call = {
+        function: 'createTeam',
+        args: callArgs
+      };
+      nebPay.call(to, value, call.function, call.args, {
+        listener: (resp) => {
+          console.log(`==> data return: ${JSON.stringify(resp)}`);
+          if (JSON.stringify(resp) === 'Error: Transaction rejected by user') {
+            console.log('=> transaction rejected');
+            return;
+          }
+          $.get("https://pay.nebulas.io/api/testnet/pay/query?payId=" + resp, function (_resp) {
+            console.log('=> pay.nebulas.io return: ' + JSON.stringify(_resp));
+          })
+          // if (data.resp.txhash) {
+          //   const txhash = data.resp.txhash;
+          //   console.log(`=> this transaction's hash: ${txhash}`);
+          // } else {
+          //   console.log('=> transaction failed');
+          // }
+        }
+      });
 
     });
   });

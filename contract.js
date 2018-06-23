@@ -234,12 +234,19 @@ NebHackathonContract.prototype = {
     return;
   },
   createTeam: function(_name, _desc, _url) {
+    var from = Blockchain.transaction.from;
+    var hacker = this.allHackers.get(from);
+    if (!hacker) {
+      hacker = new Hacker();
+      hacker.address = from;
+      this.allHackers.put(from, hacker);
+    }
     var team = new Team();
     team.name = _name;
     team.desc = _desc;
     team.url = _url;
-    var from = Blockchain.transaction.from;
     team.leader = from;
+    team.hackers = [].push(hacker);
     var _curId = this.curTeamId;
     team.id = _curId;
     this.allTeams.put(_curId, team);
