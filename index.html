@@ -1,15 +1,83 @@
-<!doctype html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>Coin Collector!</title>
-        <style>
-            html { background: black; }
-            canvas { margin:auto; }
-        </style>
-    </head>
-    <body>
-    <script src="phaser.js"></script>
-    <script src="game.js"></script>
-    </body>
-</html>
+<head>
+  <!-- dont' forget to add google analytics code here -->
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+  <!-- Custom styles for this template -->
+  <link href="customStyle.css" rel="stylesheet">
+
+  <title>Game duel platform </title>
+</head>
+
+<body class="text-center">
+  <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+      <div class="inner">
+        <h3 class="masthead-brand">master head </h3>
+        <nav class="nav nav-masthead justify-content-center" id="navMenu">
+          <a class="nav-link active" id="homeTab">Home</a>
+          <a class="nav-link" id="">Nav Link</a>
+        </nav>
+      </div>
+    </header>
+    <main id="home" role="main" class="inner cover">
+      <h1 class="cover-heading">cover-heading</h1>
+
+      <button id="getBtn" class="btn btn-secondary">Test</button>
+
+      <footer class="mastfoot mt-auto">
+        <div class="inner">
+          Duel platform built on Nebulas mainnet
+          <p>Made by a cool team</a>
+          </p>
+        </div>
+      </footer>
+  </div>
+
+  <!-- Bootstrap CSS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+  <!-- Nebulas stuff -->
+  <script src="https://cdn.jsdelivr.net/npm/nebulas@0.5.2/dist/nebulas.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/nebpay.js@0.2.0/dist/nebPay.min.js"></script>
+
+</body>
+<script>
+  var NebPay = require("nebpay");     //https://github.com/nebulasio/nebPay
+  var nebPay = new NebPay();
+
+  //to check if the extension is installed
+  //if the extension is installed, var "webExtensionWallet" will be injected in to web page
+  if (typeof (webExtensionWallet) === "undefined") {
+    console.log("webExtensionWallet NOT found!");
+  } else {
+    console.log("webExtensionWallet found");
+  }
+  //production
+  // var dappAddress = "n1tMicsrXs7m3fmtywC9zjMDVUBYJBAg5p3";
+  //test
+  var dappAddress = "n1q7qE9v8tUdT1X1hkrRhyKnjpYhSvCav3Z";
+
+  $("#getBtn").click(function () {
+    console.log("getBtn clicked");
+    var to = dappAddress;
+    var value = "0";
+    var callFunction = "get";
+    var callArgs = JSON.stringify([]);
+    nebPay.simulateCall(to, value, callFunction, callArgs, {
+      listener: callbackListener
+    });
+  });
+
+  function callbackListener(resp) {
+    console.log("resp: " + JSON.stringify(resp));
+  }
+</script>
