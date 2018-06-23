@@ -27,12 +27,40 @@
     </header>
     <main id="home" role="main" class="inner cover">
       <h1 class="cover-heading">cover-heading</h1>
-
       <button id="getBtn" class="btn btn-secondary">Test</button>
+
+      <div class="card" style="width: 50rem;">
+        <div class="card-body">
+          <form id="newTeam">
+
+            <div class="form-group row">
+              <label for="teamName" class="col-sm-2 col-form-label">Team Name</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="teamName" value="">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="teamDesciption" class="col-sm-2 col-form-label">Team Description</label>
+              <div class="col-sm-10">
+                <textarea class="form-control" id="teamDesciption" rows="3"></textarea>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="teamURL" class="col-sm-2 col-form-label">URL: </label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="teamURL" value="">
+              </div>
+            </div>
+            <button class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+
+
 
       <footer class="mastfoot mt-auto">
         <div class="inner">
-          Duel platform built on Nebulas mainnet
+          Hackathon voting built on Nebulas mainnet
           <p>Made by a cool team</a>
           </p>
         </div>
@@ -78,10 +106,9 @@
   // mainnet
   // var contractAddr = "n1tMicsrXs7m3fmtywC9zjMDVUBYJBAg5p3";
   // testnet
-  var contractAddr = "n1vszNJzakEczQqvA8BeCv9asuxLWZuzrt6";
+  var contractAddr = "n1ri9ifiYH1aFv1ZkSHXx2MnuxZAQs4UudB";
 
   $(document).ready(function () {
-
     console.log('=> document ready!');
     $("#getBtn").click(function () {
       console.log("getBtn clicked");
@@ -94,7 +121,6 @@
         function: 'get',
         args: callArgs
       };
-
       neb.api.getNebState().then((state) => {
         console.log('getstate returned: ' + JSON.stringify(state));
         neb.api
@@ -114,7 +140,19 @@
             }
           });
       });
+    });
 
+    $("#newTeam").submit(function (event) {
+      // get all the inputs into an array.
+      var $inputs = $('#newTeam :input');
+      // get an associative array of just the values.
+      var team = {};
+      $inputs.each(function () {
+        team[this.id] = $(this).val();
+      });
+
+      console.log("Handler for .submit() called.: " + JSON.stringify(team));
+      event.preventDefault();
 
     });
   });

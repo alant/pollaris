@@ -18,9 +18,9 @@ Hacker.prototype = {
       this.hackername = obj.hackername;
       this.address = obj.address;
     } else {
-      this.reputation = "";
-      this.hackername = "";
-      this.address = "";
+      this.reputation = '';
+      this.hackername = '';
+      this.address = '';
     }
   }
 };
@@ -48,12 +48,12 @@ Team.prototype = {
       this.url = obj.url;
     } else {
       this.id = 0;
-      this.teamName = "";
-      this.leader = "";
+      this.teamName = '';
+      this.leader = '';
       this.hackers = [];
       this.reward = new BigNumber(0);
-      this.description = "";
-      this.url = "";
+      this.description = '';
+      this.url = '';
     }
   }
 };
@@ -70,7 +70,7 @@ Hackathon.prototype = {
   },
 
   parse: function(text) {
-    if(text){
+    if (text) {
       var obj = JSON.parse(text);
       this.id = obj.id;
       this.name = obj.name;
@@ -146,7 +146,6 @@ Sponsor.prototype = {
 // Contract
 
 var NebHackathonContract = function() {
-
   LocalContractStorage.defineMapProperties(this, {
     allHackers: {
       parse: function(value) {
@@ -202,17 +201,17 @@ NebHackathonContract.prototype = {
   },
 
   createHacker: function(username, address) {
-    if (username === "" || address === ""){
-            throw new Error("empty username / address");
+    if (username === '' || address === '') {
+      throw new Error('empty username / address');
     }
 
-    if (username.length > 64 || address.length > 64){
-        throw new Error("username / address exceed limit length")
+    if (username.length > 64 || address.length > 64) {
+      throw new Error('username / address exceed limit length');
     }
 
     var hacker = this.hackers.get(username);
-    if (hacker){
-      throw new Error("hacker username has been occupied");
+    if (hacker) {
+      throw new Error('hacker username has been occupied');
     }
 
     hacker = new Hacker();
@@ -224,14 +223,68 @@ NebHackathonContract.prototype = {
 
   getHacker: function(username) {
     username = username.trim();
-    if (username === "" ) {
-        throw new Error("empty username")
+    if (username === '') {
+      throw new Error('empty username');
     }
     var hacker = this.hackers.get(username);
-    if (!hacker){
-      throw new Error("hacker username has been occupied");
+    if (!hacker) {
+      throw new Error('hacker username has been occupied');
     }
     return hacker;
+    return;
+  },
+  createTeam: function(_name, _desc, _url) {
+    var team = new Team();
+    team.name = _name;
+    team.desc = _desc;
+    team.url = _url;
+    var from = Blockchain.transaction.from;
+    team.leader = from;
+    var _curId = this.curTeamId;
+    team.id = _curId;
+    this.allTeams.put(_curId, team);
+    this.curTeamId = _curId + 1;
+  },
+  getTeam: function(_id) {
+    var team = this.allTeams.get(_id);
+    return team;
+  },
+  changeTeamLeader: function(_id, _leader) {
+    var from = Blockchain.transaction.from;
+    var team = this.allTeams.get(_id);
+    var oldLeader = team.leader;
+    if (from !== oldLeader) {
+      throw new Error('changeTeamLeader: only leader can');
+    }
+    team.leader = _leader;
+    this.allTeams.put(_curId, team);
+  },
+  changeTeamName: function(_id, _name) {
+    var from = Blockchain.transaction.from;
+    var team = this.allTeams.get(_id);
+    if (from !== team.leader) {
+      throw new Error('changeTeamName: only leader can');
+    }
+    team.name = _name;
+    this.allTeams.put(_curId, team);
+  },
+  changeTeamDesc: function(_id, _desc) {
+    var from = Blockchain.transaction.from;
+    var team = this.allTeams.get(_id);
+    if (from !== team.leader) {
+      throw new Error('changeTeamDesc: only leader can');
+    }
+    team.desc = _desc;
+    this.allTeams.put(_curId, team);
+  },
+  changeTeamUrl: function(_id, _url) {
+    var from = Blockchain.transaction.from;
+    var team = this.allTeams.get(_id);
+    if (from !== team.leader) {
+      throw new Error('changeTeamUrl: only leader can');
+    }
+    team.url = _url;
+    this.allTeams.put(_curId, team);
   }
 };
 
