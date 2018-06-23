@@ -1,5 +1,7 @@
 'use strict';
 
+//hacker
+
 var Hacker = function(obj) {
   this.parse(obj);
 };
@@ -22,6 +24,8 @@ Hacker.prototype = {
     }
   }
 };
+
+// Team
 
 var Team = function(obj) {
   this.parse(obj);
@@ -53,6 +57,8 @@ Team.prototype = {
     }
   }
 };
+
+// Hackathon
 
 var Hackathon = function(obj) {
   this.parse(obj);
@@ -87,6 +93,8 @@ Hackathon.prototype = {
   }
 };
 
+// Vote
+
 var Vote = function(obj) {
   this.parse(obj);
 };
@@ -111,6 +119,8 @@ Vote.prototype = {
   }
 };
 
+// Sponsor
+
 var Sponsor = function(obj) {
   this.parse(obj);
 };
@@ -132,6 +142,8 @@ Sponsor.prototype = {
     }
   }
 };
+
+// Contract
 
 var NebHackathonContract = function() {
 
@@ -219,7 +231,7 @@ NebHackathonContract.prototype = {
     if (!hacker){
       throw new Error("hacker username has been occupied");
     }
-    return hacker; 
+    return hacker;
   }
 };
 
