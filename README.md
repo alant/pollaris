@@ -17,7 +17,7 @@ Property
 - NebHackathonContract
 
 core API
-- nasYourFavouriteTeamInHackThone
+- voteYourFavouriteTeamInHackThone
 - createHacker
 - createTeam
 - createHackthon
