@@ -183,16 +183,37 @@ var NebHackathonContract = function() {
 NebHackathonContract.prototype = {
   init: function() {
     this.sayHack = 'awesome hackathon';
+    this.allHackathons = [];
+    this.allHackers = [];
+    this.allTeams = [];
   },
+
+  // status getters
+
   get: function() {
     var result = this.sayHack;
     return result;
+  },
+  getDebugInfo: function() {
+    return this;
+  },
+  getAllHackathon: function() {
+    return this.allHackathons;
+  },
+  getAllHackers: function() {
+    return this.allHackers;
+  },
+  getAllTeams: function() {
+    return this.allTeams;
   },
   getTeamReward: function(_id) {
     var team = this.teams.get(_id);
     var result = team.reward;
     return result;
   },
+
+  // api
+
   createHackathon: function(hackathonInfo) {
     var newHackathon = new Hackathon(hackathonInfo);
     this.allHackathons.set(newHackathon.id, newHackathon);
