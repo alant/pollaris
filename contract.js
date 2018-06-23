@@ -15,12 +15,12 @@ Hacker.prototype = {
     if (text) {
       var obj = JSON.parse(text);
       this.reputation = obj.reputation;
-      this.hackername = obj.hackername;
+      this.username = obj.username;
       this.address = obj.address;
     } else {
-      this.reputation = '';
-      this.hackername = '';
-      this.address = '';
+      this.reputation = "";
+      this.username = "";
+      this.address = "";
     }
   }
 };
@@ -188,11 +188,6 @@ NebHackathonContract.prototype = {
     var result = this.sayHack;
     return result;
   },
-  getTeamReward: function(_id) {
-    var team = this.teams.get(_id);
-    var result = team.reward;
-    return result;
-  },
   createHackathon: function(hackathonInfo) {
     var newHackathon = new Hackathon(hackathonInfo);
     this.allHackathons.set(newHackathon.id, newHackathon);
@@ -209,16 +204,15 @@ NebHackathonContract.prototype = {
       throw new Error('username / address exceed limit length');
     }
 
-    var hacker = this.hackers.get(username);
-    if (hacker) {
-      throw new Error('hacker username has been occupied');
+    var hacker = this.allHackers.get(username);
+    if (hacker){
+      throw new Error("hacker username has been occupied");
     }
 
     hacker = new Hacker();
     hacker.username = username;
     hacker.address = address;
-    dictItem.value = value;
-    this.hackers.put(username, hacker);
+    this.allHackers.put(username, hacker);
   },
 
   getHacker: function(username) {
@@ -231,7 +225,6 @@ NebHackathonContract.prototype = {
       throw new Error('hacker username has been occupied');
     }
     return hacker;
-    return;
   },
   createTeam: function(_name, _desc, _url) {
     var from = Blockchain.transaction.from;
@@ -292,6 +285,11 @@ NebHackathonContract.prototype = {
     }
     team.url = _url;
     this.allTeams.put(_curId, team);
+  },
+  getTeamReward: function(_id) {
+  var team = this.allTeams.get(_id);
+  var result = team.reward;
+  return result;
   }
 };
 
