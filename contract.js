@@ -37,17 +37,13 @@ Team.prototype = {
       this.id = obj.id;
       this.teamName = obj.teamName;
       this.hackers = obj.hackers;
-      this.scores = obj.scores;
-      this.avgScore = obj.avgScore;
       this.reward = obj.reward;
       this.description = obj.description;
       this.url = obj.url;
     } else {
-      this.id = (Math.random().toString(16)+"000000000").substr(2,8);
+      this.id = 0;
       this.teamName = "";
       this.hackers = [];
-      this.scores = [];
-      this.avgScore = new BigNumber(0);
       this.reward = new BigNumber(0);
       this.description = "";
       this.url = "";
@@ -162,7 +158,10 @@ var NebHackathonContract = function() {
     }
   });
   LocalContractStorage.defineProperties(this, {
-    sayHack: ''
+    sayHack: '',
+    curHackerId: 0,
+    curTeamId: 0,
+    curHackathonId: 0
   });
 };
 
