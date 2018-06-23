@@ -1,4 +1,5 @@
 <html>
+
 <head>
   <!-- dont' forget to add google analytics code here -->
 
@@ -50,9 +51,21 @@
   <script src="https://cdn.jsdelivr.net/npm/nebpay.js@0.2.0/dist/nebPay.min.js"></script>
 
 </body>
-<script>
-  var NebPay = require("nebpay");     //https://github.com/nebulasio/nebPay
+<script>  
+  const Wallet = require('nebulas');
+  const NebPay = require('nebpay');
+  const HttpRequest = require('nebulas').HttpRequest;
+
+
   var nebPay = new NebPay();
+  var account = new Wallet.Account();
+  account.setPrivateKey('f43213c3d0077b05c651684557d528652a6dbeee38a66b282273254ead06ff8d');
+
+  const neb = new Wallet.Neb();
+  neb.setRequest(new HttpRequest('https://testnet.nebulas.io'));
+
+  var gasLimit = 200000;
+  var gasPrice = 1000000;
 
   //to check if the extension is installed
   //if the extension is installed, var "webExtensionWallet" will be injected in to web page
@@ -61,23 +74,68 @@
   } else {
     console.log("webExtensionWallet found");
   }
-  //production
-  // var dappAddress = "n1tMicsrXs7m3fmtywC9zjMDVUBYJBAg5p3";
-  //test
-  var dappAddress = "n21fghvdRE2bMAAUyExRhkQGy6TvZtgUNfb";
+  // mainnet
+  // var contractAddr = "n1tMicsrXs7m3fmtywC9zjMDVUBYJBAg5p3";
+  // testnet
+  var contractAddr = "n21fghvdRE2bMAAUyExRhkQGy6TvZtgUNfb";
 
-  $("#getBtn").click(function () {
-    console.log("getBtn clicked");
-    var to = dappAddress;
-    var value = "0";
-    var callFunction = "get";
-    var callArgs = JSON.stringify([]);
-    nebPay.simulateCall(to, value, callFunction, callArgs, {
-      listener: callbackListener
+  $(document).ready(function () {
+
+    console.log('=> document ready!');
+    $("#getBtn").click(function () {
+      console.log("getBtn clicked");
+      var from = account.getAddressString()
+      var to = contractAddr;
+      var value = '0';
+      var callArgs = JSON.stringify([]);
+      console.log('=> account: ' + from);
+      const call = {
+        function: 'get',
+        args: callArgs
+      };
+
+      neb.api.getNebState().then((state) => {
+        console.log('getstate returned: ' + JSON.stringify(state));
+        neb.api
+          .call(
+            from,
+            to,
+            value,
+            '0',
+            gasPrice,
+            gasLimit,
+            call
+          )
+          .then((resp) => {
+            console.log('contract returned: ' + JSON.stringify(resp));
+            if (resp.execute_err.length > 0) {
+              throw new Error(resp.execute_err);
+            }
+          });
+      });
+
+
+
+      // neb.api.call(from.to, toAddress, value, '0', gasPrice, gasLimit, contract).then(function (resp) {
+      //   console.log(resp);
+      //   if (resp.execute_err.length > 0) {
+      //     throw new Error(resp.execute_err);
+      //   }
+      //   var result = JSON.parse(resp.result);
+      //   if (!result) {
+      //     throw new Error("访问合约API出错");
+      //   }
+      //   return result;
+      // });
+
+      // nebPay.simulateCall(to, value, 'get', callArgs, {
+      //   listener: callbackListener
+      // });
+
+      // function callbackListener(resp) {
+      //   console.log("resp: " + JSON.stringify(resp));
+      // }
+
     });
   });
-
-  function callbackListener(resp) {
-    console.log("resp: " + JSON.stringify(resp));
-  }
 </script>
