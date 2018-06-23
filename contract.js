@@ -62,18 +62,69 @@ Hackathon.prototype = {
   parse: function(text) {
     if (text) {
       var obj = JSON.parse(text);
-      this.players = obj.players;
-      this.scores = obj.scores;
-      this.avgScore = obj.avgScore;
-      this.reward = obj.reward;
-      // id
-      // description
-      // url
+      this.id = obj.id;
+      this.name = obj.name;
+      this.desc = obj.desc;
+      this.url = obj.url;
+      this.teams = obj.teams;
+      this.votes = obj.votes;
+      this.rewardPool = obj.rewardPool;
+      this.sponsors = obj.sponsors;
     } else {
-      this.players = [];
-      this.scores = [];
-      this.avgScore = new BigNumber(0);
-      this.reward = new BigNumber(0);
+      this.id = 0;
+      this.name = '';
+      this.desc = '';
+      this.url = '';
+      this.teams = [];
+      this.votes = [];
+      this.rewardPool = new BigNumber(0);
+      this.sponsors = [];
+    }
+  }
+};
+
+var Vote = function(obj) {
+  this.parse(obj);
+};
+
+Vote.prototype = {
+  toString: function() {
+    return JSON.stringify(this);
+  },
+  parse: function(text) {
+    if (text) {
+      var obj = JSON.parse(text);
+      this.from = obj.from;
+      this.hackthonId = obj.hackthonId;
+      this.teamId = obj.teamId;
+      this.value = obj.value;
+    } else {
+      this.from = '';
+      this.hackthonId = 0;
+      this.teamId = 0;
+      this.value = new BigNumber(0);
+    }
+  }
+};
+
+var Sponsor = function(obj) {
+  this.parse(obj);
+};
+
+Sponsor.prototype = {
+  toString: function() {
+    return JSON.stringify(this);
+  },
+  parse: function(text) {
+    if (text) {
+      var obj = JSON.parse(text);
+      this.name = obj.name;
+      this.contact = obj.contact;
+      this.value = obj.value;
+    } else {
+      this.name = '';
+      this.contact = '';
+      this.value = new BigNumber(0);
     }
   }
 };
