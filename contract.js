@@ -1,10 +1,60 @@
 'use strict';
 
+var Hacker = function(obj) {
+  this.parse(obj);
+};
+
+Hacker.prototype = {
+  toString: function() {
+    return JSON.stringify(this);
+  },
+
+  parse: function(text) {
+    if (text) {
+      var obj = JSON.parse(text);
+      this.reputation = obj.reputation;
+      // name
+      // contact
+      // address []
+    } else {
+      this.reputation = 3; // initial reputation after 3 strikes you're 0 then it's bad
+    }
+  }
+};
+
 var Team = function(obj) {
   this.parse(obj);
 };
 
 Team.prototype = {
+  toString: function() {
+    return JSON.stringify(this);
+  },
+
+  parse: function(text) {
+    if (text) {
+      var obj = JSON.parse(text);
+      this.hackers = obj.hackers;
+      this.scores = obj.scores;
+      this.avgScore = obj.avgScore;
+      this.reward = obj.reward;
+      // id
+      // description
+      // url
+    } else {
+      this.hackers = [];
+      this.scores = [];
+      this.avgScore = new BigNumber(0);
+      this.reward = new BigNumber(0);
+    }
+  }
+};
+
+var Hackathon = function(obj) {
+  this.parse(obj);
+};
+
+Hackathon.prototype = {
   toString: function() {
     return JSON.stringify(this);
   },
@@ -28,31 +78,17 @@ Team.prototype = {
   }
 };
 
-var Hacker = function(obj) {
-  this.parse(obj);
-};
-
-Hacker.prototype = {
-  toString: function() {
-    return JSON.stringify(this);
-  },
-
-  parse: function(text) {
-    if (text) {
-      var obj = JSON.parse(text);
-      this.reputation = obj.reputation;
-      // name
-      // contact
-      // address []
-    } else {
-      this.reputation = 3; // initial reputation after 3 strikes you're 0 then it's bad
-    }
-  }
-};
-
 var NebHackathonContract = function() {
   LocalContractStorage.defineMapProperties(this, {
-    teams: {
+    allHackers: {
+      parse: function(value) {
+        return new Hacker(value);
+      },
+      stringify: function(o) {
+        return o.toString();
+      }
+    },
+    allTeams: {
       parse: function(value) {
         return new Team(value);
       },
@@ -60,9 +96,9 @@ var NebHackathonContract = function() {
         return o.toString();
       }
     },
-    hackers: {
+    allHackathons: {
       parse: function(value) {
-        return new Hacker(value);
+        return new Hackathon(value);
       },
       stringify: function(o) {
         return o.toString();
@@ -70,8 +106,6 @@ var NebHackathonContract = function() {
     }
   });
   LocalContractStorage.defineProperties(this, {
-    depositRequirement: 0,
-    totalShortnameCount: 0,
     sayHack: ''
   });
 };
