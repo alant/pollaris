@@ -1,6 +1,10 @@
 'use strict';
 
-Game.prototype = {
+var Team = function(obj) {
+  this.parse(obj);
+};
+
+Team.prototype = {
   toString: function() {
     return JSON.stringify(this);
   },
@@ -25,11 +29,12 @@ Game.prototype = {
   }
 };
 
-var Game = function(obj) {
+
+var Hacker = function(obj) {
   this.parse(obj);
 };
 
-Player.prototype = {
+Hacker.prototype = {
   toString: function() {
     return JSON.stringify(this);
   },
@@ -44,23 +49,19 @@ Player.prototype = {
   }
 };
 
-var Player = function(obj) {
-  this.parse(obj);
-};
-
-var NebArenaContract = function() {
+var NebHackathonContract = function() {
   LocalContractStorage.defineMapProperties(this, {
-    games: {
+    teams: {
       parse: function(value) {
-        return new Game(value);
+        return new Team(value);
       },
       stringify: function(o) {
         return o.toString();
       }
     },
-    players: {
+    hackers: {
       parse: function(value) {
-        return new Player(value);
+        return new Hacker(value);
       },
       stringify: function(o) {
         return o.toString();
@@ -70,24 +71,18 @@ var NebArenaContract = function() {
   LocalContractStorage.defineProperties(this, {
     depositRequirement: 0,
     totalShortnameCount: 0,
-    arbitrator: ''
+    sayHack: ''
   });
+}
 
-
-NebArenaContract.prototype = {
-  init: function() {},
-  get: function(shortname) {
-    var shortnameEntity = this.repo.get(shortname);
-    return shortnameEntity;
+NebHackathonContract.prototype = {
+  init: function() {
+     this.sayHack = 'awesome hackathon';
   },
-  getAll: function() {
-    var from = Blockchain.transaction.from;
-    var shortnameList = this.ownerList.get(from);
-    return shortnameList;
-  },
-  getCount: function() {
-    return this.totalShortnameCount;
+  get: function() {
+    var result = this.sayHack;
+    return result;
   }
 };
 
-module.exports = NebArenaContract;
+module.exports = NebHackathonContract;
