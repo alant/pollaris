@@ -11,8 +11,8 @@ The Web Server for Chrome(https://chrome.google.com/webstore/detail/web-server-f
 Smart Contract:
 
 Property
-- Hacker 
-- Team
+- Hacker
+- Team 
 - Hackathon
 - NebHackathonContract
 
