@@ -10,10 +10,11 @@ Declare your ownership here:
 
 Smart Contract:
 
-Hacker 
-Team
-Hackathon
-NebHackathonContract
+Property
+- Hacker 
+- Team
+- Hackathon
+- NebHackathonContract
 
 core API
 - nasYourFavouriteTeamInHackThone
