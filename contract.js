@@ -9,13 +9,6 @@ Hacker.prototype = {
     return JSON.stringify(this);
   },
 
-/*
-      
-  }
-
-  stringify: function (hacker) {
-      return hacker.toString();
-*/
   parse: function(text) {
     if (text) {
       var obj = JSON.parse(text);
