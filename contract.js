@@ -230,7 +230,6 @@ NebHackathonContract.prototype = {
       throw new Error('hacker username has been occupied');
     }
     return hacker;
-    return;
   },
   createTeam: function(_name, _desc, _url) {
     var team = new Team();
