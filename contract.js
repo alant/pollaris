@@ -64,6 +64,7 @@ Hackathon.prototype = {
   },
 
   parse: function(text) {
+    if(text){
       var obj = JSON.parse(text);
       this.id = obj.id;
       this.name = obj.name;
@@ -186,7 +187,7 @@ NebHackathonContract.prototype = {
     this.allHackathons.set(newHackathon.id, newHackathon);
     var result = this.allHackathons;
     return result;
-  }
+  },
 
   createHacker: function(username, address) {
     if (username === "" || address === ""){
@@ -207,7 +208,7 @@ NebHackathonContract.prototype = {
     hacker.address = address;
     dictItem.value = value;
     this.hackers.put(username, hacker);
-  }
+  },
 
   getHacker: function(username) {
     username = username.trim();
