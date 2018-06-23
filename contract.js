@@ -188,11 +188,6 @@ NebHackathonContract.prototype = {
     var result = this.sayHack;
     return result;
   },
-  getTeamReward: function(_id) {
-    var team = this.teams.get(_id);
-    var result = team.reward;
-    return result;
-  },
   createHackathon: function(hackathonInfo) {
     var newHackathon = new Hackathon(hackathonInfo);
     this.allHackathons.set(newHackathon.id, newHackathon);
@@ -283,6 +278,11 @@ NebHackathonContract.prototype = {
     }
     team.url = _url;
     this.allTeams.put(_curId, team);
+  },
+  getTeamReward: function(_id) {
+  var team = this.allTeams.get(_id);
+  var result = team.reward;
+  return result;
   }
 };
 
