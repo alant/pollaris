@@ -172,7 +172,13 @@ NebHackathonContract.prototype = {
   getTeamReward: function(_id) {
     var team = this.teams.get(_id);
     var result = team.reward;
-    return;
+    return result;
+  },
+  createHackathon: function(hackathonInfo) {
+    var newHackathon = new Hackathon(hackathonInfo);
+    this.allHackathons.set(newHackathon.id, newHackathon);
+    result = this.allHackathons;
+    return result
   }
 };
 
