@@ -14,6 +14,8 @@ Property
 - Hacker
 - Team 
 - Hackathon
+- Vote
+- Sponsor
 - NebHackathonContract
 
 core API
