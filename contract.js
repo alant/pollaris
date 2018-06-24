@@ -237,6 +237,9 @@ NebHackathonContract.prototype = {
     return result;
   },
 
+  getCurHackathonId: function() {
+    return this.curHackathonId;
+  },
   // hacker API
 
   createHacker: function(username, address) {

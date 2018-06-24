@@ -28,7 +28,7 @@
       </div>
     </header>
     <main id="home" role="main" class="inner cover">
-      <h1 class="cover-heading">cover-heading</h1>
+      <h1 class="cover-heading">hackathon-heading</h1>
       <button id="getBtn" class="btn btn-secondary">Test</button>
 
       <div class="card" style="width: 50rem;">
@@ -88,7 +88,7 @@
     console.log('=> document ready!');
     $("#getBtn").click(function () {
       console.log("getBtn clicked");
-      readCall("get", "", account.getAddressString(), contractAddr);
+      readCall("getCurHackathonId", []);
     });
 
     $("#newHackathon").submit(function (event) {

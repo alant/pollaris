@@ -5,14 +5,14 @@ const HttpRequest = require('nebulas').HttpRequest;
 const Wallet = require('nebulas');
 const neb = new Wallet.Neb();
 
-neb.setRequest(new HttpRequest('https://testnet.nebulas.io');
+neb.setRequest(new HttpRequest('https://testnet.nebulas.io'));
 var nebPay = new NebPay();
 var gasLimit = 200000;
 var gasPrice = 1000000;
 
 function readCall(functionName, callArgs) {
-  console.log("calling read function: "+readFunctionName);
-  console.log('=> account: ' + fromWalletAddr);
+  console.log("calling read function: " + functionName);
+  // console.log('=> account: ' + fromWalletAddr);
   const readCall = {
     function: functionName,
     args: JSON.stringify(callArgs)
