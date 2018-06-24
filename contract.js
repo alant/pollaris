@@ -451,9 +451,12 @@ NebHackathonContract.prototype = {
 
     hackathon.isFinished = true;
     // find the winner team
-    hackathon.allTeams.sort(function(a, b) {
-      return new BigNumber(a.voteNum).lt(new BigNumber(b.voteNum));
-    });
+    var compareFunc = function compare(a, b) {
+      if ((new BigNumber(a.voteNum)).lt(new BigNumber(b.voteNum))) return -1;
+      if ((new BigNumber(a.voteNum)).gt(new BigNumber(b.voteNum))) return 1;
+      return 0;
+    }
+    hackathon.allTeams.sort(compareFunc);
 
     hackathon.allTeams[0].reward = new BigNumber(hackathon.rewardPool).mul(0.6);
     hackathon.allTeams[1].reward = new BigNumber(hackathon.rewardPool).mul(0.3);
@@ -470,7 +473,7 @@ NebHackathonContract.prototype = {
     this.allHackathons.set(hackathon.id, hackathon);
     return result;
   },
-  
+
   withDraw: function(_teamId, _hackathon_id) {
     var from = Blockchain.transaction.from;
     if (_teamId > 2) {
