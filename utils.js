@@ -42,19 +42,6 @@ function readCall(functionName, callArgs) {
   });
 }
 
-function onSubmitForm(id, functionName) {
-  $(id).submit(function (e) {
-    var $inputs = $(id + " :input");
-    var args = [];
-    $inputs.each(function(){
-      args.push($(this).val());
-    });
-    console.log("==> Submit " + id + " form with args: " + JSON.stringify(args));
-    e.preventDefault();
-    writeCall("0", functionName, args);
-  });
-}
-
 function writeCall(value, functionName, callArgs) {
   console.log('calling write function: ' + functionName);
   const writeCall = {
@@ -68,6 +55,7 @@ function writeCall(value, functionName, callArgs) {
         console.log('=> transaction rejected');
         return;
       }
+      pollTransactionStatus(resp.txhash, 15);
     }
   });
 }
