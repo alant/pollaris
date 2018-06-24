@@ -11,27 +11,19 @@
 
 <body>
   <header class="masthead mb-auto">
-    <div class="inner">
-      <nav class="nav nav-masthead justify-content-center" id="navMenu">
-        <a class="nav-link" id="indexTab" href="index.html">
-          <img height="24" width="24" src="../images/icon.png" />
-        </a>
-        <a class="nav-link" id="homeTab" href="home.html">Home</a>
-        <a class="nav-link" id="teamTab" href="team.html">Team</a>
-        <a class="nav-link" id="hackathonTab" href="hackathon.html">Hackathon</a>
-        <a class="nav-link" id="HackerTab" href="hacker.html">Hacker</a>
-        <a class="nav-link active" id="VoteTab" href="vote.html">Vote</a>
-      </nav>
-    </div>
+    <nav class="nav nav-masthead justify-content-center" id="navMenu">
+      <a class="nav-link" id="indexTab" href="index.html">
+        <img height="24" width="24" src="../images/icon.png" />
+      </a>
+      <a class="nav-link" id="teamTab" href="team.html">Team</a>
+    </nav>
   </header>
 
   <main role="main" class="container">
-
-    <div class="hackathon-container">
+    <div class="hackathon-container justify-content-center row">
     </div>
     <div class="teams-container">
     </div>
-
   </main>
 
   <footer class="footer">
@@ -66,13 +58,13 @@
         results.forEach((hackathon, i) => {
           console.log(`=====>>>promiseall: ${JSON.stringify(hackathon)}`);
           $(".hackathon-container").append(`
-              <div class="hackathon-card" id="${i}" style="width: 18rem;">
-                <img class="card-img-top" src="../images/hackathon${i % 3 + 1}.png" alt="Card image cap">
-                  <div class="card-body">
-                    <h5 class="card-title">${JSON.parse(hackathon.result).name}</h5>
-                    <p class="card-text">${JSON.parse(hackathon.result).desc}</p>
-                    <p class="card-text">${JSON.parse(hackathon.result).url}</p>
-                  </div>
+              <div class="card hackathon-card" id="${i}">
+                <img class="card-img-top" src="../images/hackathon${i % 3 + 1}.png" alt="Card image cap"/>
+                <div class="card-body">
+                  <h5 class="card-title">${JSON.parse(hackathon.result).name}</h5>
+                  <p class="card-text">${JSON.parse(hackathon.result).desc}</p>
+                  <p class="card-text">${JSON.parse(hackathon.result).url}</p>
+                </div>
               </div>
           `);
         });
@@ -104,12 +96,6 @@
               </thead>
               <tbody>
             ` ;
-          // var hackers = JSON.parse(team.result).hackers;
-          // hackers.forEach((hacker) => {
-          //   innerElement += `<td> ${hacker.username}</td>`;
-          //   innerElement += `<td> ${hacker.address}</td>`;
-          //   innerElement += '</tr>';
-          // });
           innerElement += `</tbody></table>`;
           $(".teams-container").append(`
               <div class="team-card" style="width: 18rem;">

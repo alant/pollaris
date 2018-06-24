@@ -1,15 +1,30 @@
 body {
-  padding-top: 4.5rem;
+}
+
+footer {
+  bottom: 0;
+  position: absolute;
+  width: 100%;
+}
+
+nav {
+  padding: .5rem 0 1rem 0;
+}
+
+.hackathon-container {
+  display: flex;
 }
 
 .hackathon-card {
   cursor: pointer;
+  margin: 0 1rem 1rem 0;
+  width: 18rem;
 }
 
-.teams-container{
+.teams-container {
   display: flex;
 }
 
-.team-card{
-  padding:5px;
+.team-card {
+  padding: 5px;
 }

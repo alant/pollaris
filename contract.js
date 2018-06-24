@@ -373,7 +373,9 @@ NebHackathonContract.prototype = {
       throw new Error('can not vote finished hackathon');
     }
     hackathon.votes.push(vote);
-    hackathon.rewardPool += value;
+    value = new BigNumber(value);
+    var _rewardPool = new BigNumber(hackathon.rewardPool);
+    hackathon.rewardPool = _rewardPool.add(value);
     hackathon.allTeams[teamId].voteNum = new BigNumber(
       hackathon.allTeams[teamId].voteNum
     ).add(new BigNumber(value));
@@ -452,15 +454,16 @@ NebHackathonContract.prototype = {
     hackathon.isFinished = true;
     // find the winner team
     var compareFunc = function compare(a, b) {
-      if ((new BigNumber(a.voteNum)).lt(new BigNumber(b.voteNum))) return -1;
-      if ((new BigNumber(a.voteNum)).gt(new BigNumber(b.voteNum))) return 1;
+      // bigger number go up. this is reverse of converntional sort where bigger number go down
+      if ((new BigNumber(a.voteNum)).lt(new BigNumber(b.voteNum))) return 1;
+      if ((new BigNumber(a.voteNum)).gt(new BigNumber(b.voteNum))) return -1;
       return 0;
     }
     hackathon.allTeams.sort(compareFunc);
-
-    hackathon.allTeams[0].reward = new BigNumber(hackathon.rewardPool).mul(0.6);
-    hackathon.allTeams[1].reward = new BigNumber(hackathon.rewardPool).mul(0.3);
-    hackathon.allTeams[2].reward = new BigNumber(hackathon.rewardPool).mul(0.1);
+    var base = (new BigNumber(hackathon.rewardPool)).div(100);
+    hackathon.allTeams[0].reward = base.mul(60);
+    hackathon.allTeams[1].reward = base.mul(30);
+    hackathon.allTeams[2].reward = base.mul(10);
 
     var result = [
       hackathon.allTeams[0],
