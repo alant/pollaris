@@ -297,6 +297,10 @@ NebHackathonContract.prototype = {
   getAllHackathon: function() {
     return this.allHackathons;
   },
+  getHackathon: function(_id) {
+    var result = this.allHackathons.get(_id);
+    return result;
+  },
   getAllHackers: function() {
     return this.allHackers;
   },
@@ -393,7 +397,7 @@ NebHackathonContract.prototype = {
     }
 
     var team = new Team();
-    team.name = _name;
+    team.teamName = _name;
     team.desc = _desc;
     team.url = _url;
     team.leader = from;
@@ -409,6 +413,19 @@ NebHackathonContract.prototype = {
 
     hackathon.curTeamId = _curId + 1;
 
+    this.allHackathons.set(hackathon.id, hackathon);
+  },
+
+  changeTeamLeader: function(_team_id, _hackathon_id, _leader) {
+    var hackathon = this.allHackathons.get(_hackathon_id);
+    var from = Blockchain.transaction.from;
+    var team = hackathon.allTeams[_team_id];
+    var oldLeader = team.leader;
+    if (from !== oldLeader) {
+      throw new Error('changeTeamLeader: only leader can');
+    }
+    team.leader = _leader;
+    hackathon.allTeams[_team_id] = team;
     this.allHackathons.set(hackathon.id, hackathon);
   },
 
