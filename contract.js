@@ -74,13 +74,13 @@ Vote.prototype = {
     if (text) {
       var obj = JSON.parse(text);
       this.from = obj.from;
-      this.hackthonId = obj.hackthonId;
+      this.hackathonId = obj.hackathonId;
       this.teamId = obj.teamId;
       this.value = obj.value;
       this.reward = obj.reward;
     } else {
       this.from = '';
-      this.hackthonId = 0;
+      this.hackathonId = 0;
       this.teamId = 0;
       this.value = new BigNumber(0);
       this.reward = new BigNumber(0);
@@ -186,7 +186,7 @@ Hackathon.prototype = {
 
   finishHackthon: function() {
     if (this.allTeams.length < 3) {
-      return "less then 3 teams fail to finish hackthon";
+      return "less then 3 teams fail to finish hackathon";
     }
     this.isFinished = true;
     // find the winner team
@@ -286,13 +286,13 @@ NebHackathonContract.prototype = {
   },
 
   getTeamRewardFromCurrentHackathon: function(_id) {
-    var hackathon = this.getHackathon(_hackathon_id);
+    var hackathon = this.allHackathons.get(_hackathon_id);
     var result = hackathon.allTeams[_id].reward;
     return result;
   },
 
   getTeamReward: function(_id, _hackathon_id) {
-    var hackathon = this.getHackathon(_hackathon_id);
+    var hackathon = this.allHackathons.get(_hackathon_id);
     var result = hackathon.allTeams[_id].reward;
     return result;
   },
@@ -332,24 +332,8 @@ NebHackathonContract.prototype = {
     this.curHackathonId = curId + 1;
   },
 
-  getHackathon: function(_id) {
-    var result = this.allHackathons.get(_id);
-    return result;
-  },
-
   getCurHackathonId: function() {
     return this.curHackathonId;
-  },
-
-  getHackathon: function(newHackathon_id) {
-    var hackathon = this.allHackathons.get(newHackathon_id);
-    if (hackathon) {
-      console.log("get hackathon: " + newHackathon_id);
-    } else {
-      console.log("fail to get hackathon " + newHackathon_id);
-    }
-
-    return hackathon;
   },
 
   createHacker: function(username, address) {
@@ -387,11 +371,11 @@ NebHackathonContract.prototype = {
 
     var vote = new Vote();
     vote.from = from;
-    vote.hackthonId = hackathon_id;
+    vote.hackathonId = hackathon_id;
     vote.teamId = teamId;
     vote.value = value;
 
-    var hackathon = this.getHackathon(hackathon_id);
+    var hackathon = this.allHackathons.get(hackathon_id);
     if (hackathon.isFinished) {
       throw new Error("can not vote finished hackathon");
     }
@@ -416,7 +400,7 @@ NebHackathonContract.prototype = {
   },
 
   createTeamForHackathon: function(_name, _desc, _url, _hackathon_id) {
-    var hackathon = this.getHackathon(_hackathon_id);
+    var hackathon = this.allHackathons.get(_hackathon_id);
     if (!hackathon) {
       console.log("fail to get hackathon " + _hackathon_id);
     }
@@ -449,14 +433,14 @@ NebHackathonContract.prototype = {
   },
 
   finishHackathon: function (_hackathon_id) {
-    var hackathon = this.getHackathon(_hackathon_id);
-    var hackathonResult = hackthon.finishHackathon();
+    var hackathon = this.allHackathons.get(_hackathon_id);
+    var hackathonResult = hackathon.finishHackathon();
     this.allHackathons.set(hackathon.id, hackathon);
     return hackathonResult;
   },
 
   getHackathonResult: function (_hackathon_id) {
-    var hackathon = this.getHackathon(_hackathon_id);
+    var hackathon = this.allHackathons.get(_hackathon_id);
     if (!hackathon.isFinished) {
       throw new Error('can not fetch result from on going hackathon');
     }
@@ -464,7 +448,7 @@ NebHackathonContract.prototype = {
   },
 
   getHackathonTeamFromHackathonId: function (_team_id, _hackathon_id) {
-    var hackathon = this.getHackathon(_hackathon_id);
+    var hackathon = this.allHackathons.get(_hackathon_id);
     return hackathon.allTeams.get(_team_id);
   }
 };

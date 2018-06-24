@@ -116,13 +116,12 @@
         vote[this.id] = $(this).val();
       });
 
-      console.log("Handler for .submit() called.: " + JSON.stringify(hackathon));
+      console.log("Handler for .submit() called.: " + JSON.stringify(vote));
       event.preventDefault();
       var callArgs = [vote.teamId, vote.hackathonId];
       console.log('=====> callArgs: ' + callArgs);
-      var value = '0';
       // helper to call a write call using nebpay
-      writeCall('0', "vote", callArgs);
+      writeCall('0.001', "vote", callArgs);
     });
     $("#getAllTeamsForHackathonId").submit(function (event) {
       // get all the inputs into an array.
@@ -130,7 +129,7 @@
       // get an associative array of just the values.
       var hackathon = {};
       $inputs.each(function () {
-        vote[this.id] = $(this).val();
+        hackathon[this.id] = $(this).val();
       });
 
       console.log("Handler for .submit() called.: " + JSON.stringify(hackathon));
@@ -139,7 +138,9 @@
       console.log('=====> callArgs: ' + callArgs);
       var value = '0';
       // helper to call a write call using nebpay
-      writeCall('0', "getAllTeamsForHackathonId", callArgs);
+      readCall("getAllTeamsBasedOnHackathonId", callArgs).then((resp) => {
+        console.log("====>>>>" + JSON.stringify(resp));
+      });
     });
     $("#finishHackathon").submit(function (event) {
       // get all the inputs into an array.
@@ -147,10 +148,10 @@
       // get an associative array of just the values.
       var finishHackathonWithId = {};
       $inputs.each(function () {
-        vote[this.id] = $(this).val();
+        finishHackathonWithId[this.id] = $(this).val();
       });
 
-      console.log("Handler for .submit() called.: " + JSON.stringify(hackathon));
+      console.log("Handler for .submit() called.: " + JSON.stringify(finishHackathonWithId));
       event.preventDefault();
       var callArgs = [finishHackathonWithId.hackathonIdForFinishHackathon];
       console.log('=====> callArgs: ' + callArgs);
