@@ -74,4 +74,34 @@
 
 </body>
 <script src="./utils.js"></script>
+<script>
+  //to check if the extension is installed
+  //if the extension is installed, var "webExtensionWallet" will be injected in to web page
+  if (typeof (webExtensionWallet) === "undefined") {
+    console.log("webExtensionWallet NOT found!");
+  } else {
+    console.log("webExtensionWallet found");
+  }
+
+  $(document).ready(function () {
+    console.log('=> document ready!');
+    $("#newHacker").submit(function (event) {
+      // get all the inputs into an array.
+      var $inputs = $('#newHacker :input');
+      // get an associative array of just the values.
+      var hacker = {};
+      $inputs.each(function () {
+        hacker[this.id] = $(this).val();
+      });
+
+      console.log("Handler for .submit() called.: " + JSON.stringify(hacker));
+      event.preventDefault();
+      var callArgs = [hacker.username, hacker.address];
+      console.log('=====> callArgs: ' + callArgs);
+      var value = '0';
+      // helper to call a write call using nebpay
+      writeCall(value, "createHacker", callArgs);
+    });
+  });
+</script>
 </html>
