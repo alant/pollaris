@@ -58,6 +58,19 @@
 <script>
   //to check if the extension is installed
   //if the extension is installed, var "webExtensionWallet" will be injected in to web page
+  function loadAllTeams() {
+    readCall("getAllTeamIds", []).then((resp, code, msg) => {
+      console.log('====> util: ' + JSON.stringify(resp));
+      let pArray = JSON.parse(resp.result).map((teamId)=>{
+        console.log('getting team :'+ JSON.stringify(teamId));
+        return readCall("getTeam", [teamId]);
+      });
+      const promises = Promise.all(pArray);
+      promises.then((results) => {
+        console.log(`==>promiseall: ${JSON.stringify(results)}`);
+      });
+    });
+  }
   if (typeof (webExtensionWallet) === "undefined") {
     console.log("webExtensionWallet NOT found!");
   } else {
@@ -66,6 +79,7 @@
 
   $(document).ready(function () {
     console.log('=> document ready!');
-    readCall('getAllTeams', []);
+    loadAllTeams();
   });
+
 </script>
