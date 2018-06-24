@@ -7,7 +7,7 @@ const neb = new Wallet.Neb();
 const contractAddr = "n1qPSeL4Zb4Ptte1hBQHkmb3pxxszvY3BHs";
 const walletAddr = "n1JqiWKakmuymgXqCor9RxDnBkSiPbtmEjE";
 
-neb.setRequest(new HttpRequest('http://localhost:8685'));
+neb.setRequest(new HttpRequest('testnet.nebulas.io');
 var nebPay = new NebPay();
 var gasLimit = 200000;
 var gasPrice = 1000000;
