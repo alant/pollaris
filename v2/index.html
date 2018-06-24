@@ -36,46 +36,48 @@
         Create Hackathon
       </button>
     </div>
+    <div class="tool button">
+      <button class="btn btn-primary" id="create-team-button" data-toggle="modal" data-target="#create-team-modal">
+        Create Team
+      </button>
+    </div>
     <div class="modal fade" tabindex="-1" role="dialog" id="create-hackathon-modal">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Create Hackathon</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="card" >
-          <div class="card-body">
-            <form id="newHackathon">
-              <div class="form-group row">
-                <label for="hackathonName" class="col-sm-5 col-form-label">Hackathon Name</label>
-                <div class="col-sm-7">
-                  <input type="text" class="form-control" id="hackathonName" value="">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create Hackathon</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="card" >
+            <div class="card-body">
+              <form id="newHackathon">
+                <div class="form-group row">
+                  <label for="hackathonName" class="col-sm-5 col-form-label">Hackathon Name</label>
+                  <div class="col-sm-7">
+                    <input type="text" class="form-control" id="hackathonName" value="">
+                  </div>
                 </div>
-              </div>
-              <div class="form-group row">
-                <label for="hackathonDescription" class="col-sm-5 col-form-label">Description</label>
-                <div class="col-sm-7">
-                  <textarea class="form-control" id="hackathonDescription" rows="3"></textarea>
+                <div class="form-group row">
+                  <label for="hackathonDescription" class="col-sm-5 col-form-label">Description</label>
+                  <div class="col-sm-7">
+                    <textarea class="form-control" id="hackathonDescription" rows="3"></textarea>
+                  </div>
                 </div>
-              </div>
-              <div class="form-group row">
-                <label for="hackathonURL" class="col-sm-5 col-form-label">URL: </label>
-                <div class="col-sm-7">
-                  <input type="text" class="form-control" id="hackathonURL" value="">
+                <div class="form-group row">
+                  <label for="hackathonURL" class="col-sm-5 col-form-label">URL: </label>
+                  <div class="col-sm-7">
+                    <input type="text" class="form-control" id="hackathonURL" value="">
+                  </div>
                 </div>
+                <button class="btn btn-primary">Create Hackathon</button>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="tool button">
-      <button class="btn btn-primary" id="create-hackathon-button" data-toggle="modal" data-target="#create-team-modal">
-        Create Team
-      </button>
     </div>
     <div class="modal fade" tabindex="-1" role="dialog" id="create-team-modal">
       <div class="modal-dialog modal-dialog-centered" role="document">
@@ -121,7 +123,6 @@
           </div>
         </div>
       </div>
-    </div>
     </div>
   </main>
 
