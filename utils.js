@@ -17,7 +17,7 @@ function readCall(functionName, callArgs) {
     function: functionName,
     args: JSON.stringify(callArgs)
   };
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     neb.api.getNebState().then((state) => {
     console.log('getstate returned: ' + JSON.stringify(state));
     neb.api
@@ -31,11 +31,10 @@ function readCall(functionName, callArgs) {
         readCall
       )
       .then((resp) => {
-        console.log('contract returned: ' + JSON.stringify(resp));
+        console.log('==> contract returned: ' + JSON.stringify(resp));
+        resolve(resp, 100, 'success');
         if (resp.execute_err.length > 0) {
-          throw new Error(resp.execute_err);
-        } else {
-          resolve(resp, 100, 'success');
+          console.log('execute_error: ' + JSON.stringify(resp));
         }
       });
     });

@@ -88,7 +88,9 @@
     console.log('=> document ready!');
     $("#getBtn").click(function () {
       console.log("getBtn clicked");
-      readCall("getCurHackathonId", []);
+      readCall("getCurHackathonId", []).then((resp, code, msg) => {
+        console.log('====> util: ' + JSON.stringify(resp));
+      });
     });
 
     $("#newHackathon").submit(function (event) {
