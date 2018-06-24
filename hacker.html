@@ -97,7 +97,7 @@
 
       console.log("Handler for .submit() called.: " + JSON.stringify(hacker));
       event.preventDefault();
-      var callArgs = [hacker.username, hacker.address];
+      var callArgs = [hacker.hackerName, hacker.hackerAddress];
       console.log('=====> callArgs: ' + callArgs);
       var value = '0';
       // helper to call a write call using nebpay
