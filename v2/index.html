@@ -71,11 +71,12 @@
       });
     });
 
+    var hackathonId;
     $(document).on('click', "div.hackathon-card", function () {
-      var divId = $(this).attr("id");
-      console.log("===>>> clicked on div: " + divId);
+      hackathonId = $(this).attr("id");
+      console.log("===>>> clicked on div: " + hackathonId);
       $(".hackathon-container").html('');
-      loadAllTeams(divId);
+      loadAllTeams(hackathonId);
 
     });
 
@@ -101,16 +102,33 @@
               <div class="team-card" style="width: 18rem;">
                 <img class="card-img-top" src="../images/team${i % 4 + 1}.jpg" alt="Card image cap">
                   <div class="card-body">
-                    <h5 class="card-title">Team Name: ${team.teamName}</h5>
+                    <h5 class="card-title">Team Name: <br>${team.teamName}</h5>
                     <p class="card-text">Leader Addr: ${team.leader.substring(0, 7)}...</p>
-                    <h5 class="card-title">Team Members:</h5>
-                    ${innerElement}
+                    <button type="button" value="${i}" class="vote-btn btn btn-primary">Vote</button>
+                    <button type="button" value="${i}" class="cash-btn btn btn-success">Cashout</button>
                   </div>
               </div>
           `);
         });
 
       });
+
+      $(document).on('click', ".vote-btn", function () {
+        var divId = $(this).attr("value");
+        console.log("===>>>======== clicked on team: " + divId + " hackathon: " + hackathonId);
+        var callArgs = [divId, hackathonId];
+        console.log('=====> callArgs: ' + callArgs);
+        // helper to call a write call using nebpay
+        writeCall('0.01', "vote", callArgs);
+      });
+
+      $(document).on('click', ".cash-btn", function () {
+        var divId = $(this).attr("value");
+        console.log("===>>>======== clicked on cash: " + divId);
+        var callArgs = [divId, hackathonId];
+        writeCall('0', "withDraw", callArgs)
+      });
+
 
       // readCall("getAllTeamIds", []).then((resp, code, msg) => {
       //   console.log('====> util: ' + JSON.stringify(resp));
