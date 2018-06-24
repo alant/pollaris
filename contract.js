@@ -10,7 +10,7 @@ Hacker.prototype = {
   toString: function() {
     return JSON.stringify(this);
   },
-  
+
   parse: function(text) {
     if (text) {
       var obj = JSON.parse(text);
@@ -35,7 +35,7 @@ Team.prototype = {
   toString: function() {
     return JSON.stringify(this);
   },
-  
+
   parse: function(text) {
     if (text) {
       var obj = JSON.parse(text);
@@ -68,7 +68,7 @@ Hackathon.prototype = {
   toString: function() {
     return JSON.stringify(this);
   },
-  
+
   parse: function(text) {
     if (text) {
       var obj = JSON.parse(text);
@@ -203,22 +203,42 @@ NebHackathonContract.prototype = {
     var result = this.sayHack;
     return result;
   },
+  getTeamReward: function(_id) {
+    var team = this.allTeams.get(_id);
+    var result = team.reward;
+    return result;
+  },
+  getAllTeams: function() {
+    var allTeams = []
+    this.listOfAllTeamIds.forEach(function(_id){
+      allTeams.concat(this.allTeams.get(_id));
+    });
+    return allTeams;
+  },
+  getAllTeamIds: function() {
+    return this.listOfAllTeamIds;
+  }
+
+  // hackathon API
+
   createHackathon: function(hackathonInfo) {
     var newHackathon = new Hackathon(hackathonInfo);
     this.allHackathons.set(newHackathon.id, newHackathon);
     var result = this.allHackathons;
     return result;
   },
-  
+
+  // hacker API
+
   createHacker: function(username, address) {
     if (username === '' || address === '') {
       throw new Error('empty username / address');
     }
-    
+
     if (username.length > 64 || address.length > 64) {
       throw new Error('username / address exceed limit length');
     }
-    
+
     var hacker = this.allHackers.get(username);
     if (hacker){
       console.log("got this item");
@@ -226,7 +246,7 @@ NebHackathonContract.prototype = {
     } else {
       console.log("didn't this item");
     }
-    
+
     hacker = new Hacker();
     hacker.username = username;
     hacker.address = address;
@@ -235,7 +255,7 @@ NebHackathonContract.prototype = {
     var hacker2 = this.allHackers.get(username);
     console.log("after put hacker2. created name: " + hacker2.username + "address: " + hacker2.address);
   },
-  
+
   getHacker: function(username) {
     username = username.trim();
     if (username === '') {
@@ -249,6 +269,8 @@ NebHackathonContract.prototype = {
     }
     return hacker;
   },
+
+  // team API
 
   createTeam: function(_name, _desc, _url) {
     var from = Blockchain.transaction.from;
@@ -315,21 +337,6 @@ NebHackathonContract.prototype = {
     team.url = _url;
     this.allTeams.put(_curId, team);
   },
-  getTeamReward: function(_id) {
-    var team = this.allTeams.get(_id);
-    var result = team.reward;
-    return result;
-  },
-  getAllTeams: function() {
-    var allTeams = []
-    this.listOfAllTeamIds.forEach(function(_id){
-      allTeams.concat(this.allTeams.get(_id));
-    });
-    return allTeams;
-  },
-  getAllTeamIds: function() {
-    return this.listOfAllTeamIds;
-  }
 };
 
 module.exports = NebHackathonContract;
