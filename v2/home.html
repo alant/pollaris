@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- dont' forget to add google analytics code here -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+  <!-- Custom styles for this template -->
+  <link href="customStyle.css" rel="stylesheet">
+
+  <title>Pollaris: platform for hackathons</title>
+</head>
+
+<body class="text-center">
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+  <header class="masthead mb-auto">
+    <div class="inner">
+      <nav class="nav nav-masthead justify-content-center" id="navMenu">
+        <a class="nav-link" id="indexTab" href="index.html"><img height="24" width="24" src="images/icon.png"/></a>
+        <a class="nav-link" id="homeTab" href="home.html">Home</a>
+        <a class="nav-link" id="teamTab" href="team.html">Team</a>
+        <a class="nav-link" id="hackathonTab" href="hackathon.html">Hackathon</a>
+        <a class="nav-link" id="HackerTab" href="hacker.html">Hacker</a>
+        <a class="nav-link active" id="VoteTab" href="vote.html">Vote</a>
+      </nav>
+    </div>
+  </header>
+    <main id="home" role="main" class="inner cover">
+      <h1 class="cover-heading">Home getAllTeams</h1>
+      <div class="teams-container">
+      </div>
+
+    </main>
+    <footer class="mastfoot mt-auto">
+      <div class="inner">Hackathon crowd voting system built on Nebulas mainnet
+        <p>Brought to you by Pollaris</a>
+        </p>
+      </div>
+    </footer>
+  </div>
+  <!-- Bootstrap CSS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+  <!-- Nebulas stuff -->
+  <script src="https://cdn.jsdelivr.net/npm/nebulas@0.5.2/dist/nebulas.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/nebpay.js@0.2.0/dist/nebPay.min.js"></script>
+  <script src="./config.js"></script>
+  <script src="./utils.js"></script>
+</body>
+
+</html>
+
+<script>
+  //to check if the extension is installed
+  //if the extension is installed, var "webExtensionWallet" will be injected in to web page
+  function loadAllTeams() {
+    readCall("getAllTeamIds", []).then((resp, code, msg) => {
+      console.log('====> util: ' + JSON.stringify(resp));
+      let pArray = JSON.parse(resp.result).map((teamId) => {
+        console.log('getting team :' + JSON.stringify(teamId));
+        return readCall("getTeam", [teamId]);
+      });
+      const promises = Promise.all(pArray);
+      promises.then((results) => {
+        results.forEach((team, i) => {
+          console.log(`=====>>>promiseall: ${JSON.stringify(team)}`);
+          var innerElement = `
+          <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Username</th>
+      <th scope="col">Address</th>
+    </tr>
+  </thead>
+  <tbody>
+      ` ;
+          var hackers = JSON.parse(team.result).hackers;
+          hackers.forEach((hacker) => {
+            innerElement += `<td> ${hacker.username}</td>`;
+            innerElement += `<td> ${hacker.address}</td>`;
+             innerElement += '</tr>';
+          });
+          innerElement += `</tbody></table>`;
+          $(".teams-container").append(`
+              <div class="team-card" style="width: 18rem;">
+                <img class="card-img-top" src="./images/hackathon${i % 3 + 1}.png" alt="Card image cap">
+                  <div class="card-body">
+                    <h5 class="card-title">Team Name: ${JSON.parse(team.result).teamName}</h5>
+                    <p class="card-text">Leader Addr: ${JSON.parse(team.result).leader.substring(0, 7)}...</p>
+                    ${innerElement}
+                  </div>
+              </div>
+          `);
+        });
+      });
+    });
+  }
+  if (typeof (webExtensionWallet) === "undefined") {
+    console.log("webExtensionWallet NOT found!");
+  } else {
+    console.log("webExtensionWallet found");
+  }
+
+  $(document).ready(function () {
+    console.log('=> document ready!');
+    readCall('getHackathonTeamFromHackathonId', [0]);
+  });
+
+</script>

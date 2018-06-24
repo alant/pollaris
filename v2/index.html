@@ -1,0 +1,177 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+  <link href="./customStyle.css" rel="stylesheet">
+  <title>Pollaris: platform for hackathons</title>
+</head>
+
+<body>
+  <header class="masthead mb-auto">
+    <div class="inner">
+      <nav class="nav nav-masthead justify-content-center" id="navMenu">
+        <a class="nav-link" id="indexTab" href="index.html">
+          <img height="24" width="24" src="images/icon.png" />
+        </a>
+        <a class="nav-link" id="homeTab" href="home.html">Home</a>
+        <a class="nav-link" id="teamTab" href="team.html">Team</a>
+        <a class="nav-link" id="hackathonTab" href="hackathon.html">Hackathon</a>
+        <a class="nav-link" id="HackerTab" href="hacker.html">Hacker</a>
+        <a class="nav-link active" id="VoteTab" href="vote.html">Vote</a>
+      </nav>
+    </div>
+  </header>
+
+  <main role="main" class="container">
+
+    <div class="hackathon-container">
+    </div>
+    <div class="teams-container">
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container text-center">
+      <small class="text-muted">Hackathon voting built on Nebulas by Pollaris team</small>
+    </div>
+  </footer>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+  <!-- Nebulas stuff -->
+  <script src="https://cdn.jsdelivr.net/npm/nebulas@0.5.2/dist/nebulas.js"></script>
+  <script src=lib/nebPay.js></script>
+  <script src="./utils.js"></script>
+  <script src="./config.js"></script>
+</body>
+<script>
+  $(document).ready(function () {
+    console.log('=> document ready!');
+    readCall("getCurHackathonId", []).then((resp, code, msg) => {
+      console.log('====> util: ' + JSON.stringify(resp));
+      let pArray = [];
+      for (let i = 0; i < resp.result; i++) {
+        console.log('==> get :' + i);
+        pArray.push(readCall("getHackathon", [i]))
+      }
+      const promises = Promise.all(pArray);
+      promises.then((results) => {
+        results.forEach((hackathon, i) => {
+          console.log(`=====>>>promiseall: ${JSON.stringify(hackathon)}`);
+          $(".hackathon-container").append(`
+              <div class="hackathon-card" id="${i}" style="width: 18rem;">
+                <img class="card-img-top" src="./images/hackathon${i % 3 + 1}.png" alt="Card image cap">
+                  <div class="card-body">
+                    <h5 class="card-title">${JSON.parse(hackathon.result).name}</h5>
+                    <p class="card-text">${JSON.parse(hackathon.result).desc}</p>
+                    <p class="card-text">${JSON.parse(hackathon.result).url}</p>
+                  </div>
+              </div>
+          `);
+        });
+      });
+    });
+
+    $(document).on('click', "div.hackathon-card", function () {
+      var divId = $(this).attr("id");
+      console.log("===>>> clicked on div: " + divId);
+      $(".hackathon-container").html('');
+      loadAllTeams(divId);
+
+    });
+
+    function loadAllTeams(_hackathon_id) {
+      var callArgs = [_hackathon_id];
+      readCall("getAllTeamsBasedOnHackathonId", callArgs).then((resp) => {
+        console.log("====>>>>" + JSON.stringify(resp.result));
+        var teams = JSON.parse(resp.result);
+        teams.forEach((team, i) => {
+          console.log(`=====>>>readCall: ${JSON.stringify(team)}`);
+          var innerElement = `
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Username</th>
+                  <th scope="col">Address</th>
+                </tr>
+              </thead>
+              <tbody>
+            ` ;
+          // var hackers = JSON.parse(team.result).hackers;
+          // hackers.forEach((hacker) => {
+          //   innerElement += `<td> ${hacker.username}</td>`;
+          //   innerElement += `<td> ${hacker.address}</td>`;
+          //   innerElement += '</tr>';
+          // });
+          innerElement += `</tbody></table>`;
+          $(".teams-container").append(`
+              <div class="team-card" style="width: 18rem;">
+                <img class="card-img-top" src="./images/team${i % 4 + 1}.jpg" alt="Card image cap">
+                  <div class="card-body">
+                    <h5 class="card-title">Team Name: ${team.teamName}</h5>
+                    <p class="card-text">Leader Addr: ${team.leader.substring(0, 7)}...</p>
+                    <h5 class="card-title">Team Members:</h5>
+                    ${innerElement}
+                  </div>
+              </div>
+          `);
+        });
+
+      });
+
+      // readCall("getAllTeamIds", []).then((resp, code, msg) => {
+      //   console.log('====> util: ' + JSON.stringify(resp));
+      //   let pArray = JSON.parse(resp.result).map((teamId) => {
+      //     console.log('getting team :' + JSON.stringify(teamId));
+      //     return readCall("getTeam", [teamId]);
+      //   });
+      //   const promises = Promise.all(pArray);
+      //   promises.then((results) => {
+      //     results.forEach((team, i) => {
+      //       console.log(`=====>>>promiseall: ${JSON.stringify(team)}`);
+      //       var innerElement = `
+      //       <table class="table">
+      //         <thead>
+      //           <tr>
+      //             <th scope="col">Username</th>
+      //             <th scope="col">Address</th>
+      //           </tr>
+      //         </thead>
+      //         <tbody>
+      //       ` ;
+      //       var hackers = JSON.parse(team.result).hackers;
+      //       hackers.forEach((hacker) => {
+      //         innerElement += `<td> ${hacker.username}</td>`;
+      //         innerElement += `<td> ${hacker.address}</td>`;
+      //         innerElement += '</tr>';
+      //       });
+      //       innerElement += `</tbody></table>`;
+      //       $(".teams-container").append(`
+      //         <div class="team-card" style="width: 18rem;">
+      //           <img class="card-img-top" src="./images/team${i % 4 + 1}.jpg" alt="Card image cap">
+      //             <div class="card-body">
+      //               <h5 class="card-title">Team Name: ${JSON.parse(team.result).teamName}</h5>
+      //               <p class="card-text">Leader Addr: ${JSON.parse(team.result).leader.substring(0, 7)}...</p>
+      //               ${innerElement}
+      //             </div>
+      //         </div>
+      //     `);
+      //     });
+      //   });
+      // });
+
+
+    }
+
+  });
+
+</script>
+
+</html>
