@@ -452,7 +452,7 @@ NebHackathonContract.prototype = {
     hackathon.isFinished = true;
     // find the winner team
     hackathon.allTeams.sort(function(a, b) {
-      return new BigNumber(a.voteNum).sub(new BigNumber(b.voteNum));
+      return new BigNumber(a.voteNum).lt(new BigNumber(b.voteNum));
     });
 
     hackathon.allTeams[0].reward = new BigNumber(hackathon.rewardPool).mul(0.6);
