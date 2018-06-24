@@ -19,7 +19,9 @@
     <header class="masthead mb-auto">
       <div class="inner">
         <nav class="nav nav-masthead justify-content-center" id="navMenu">
-          <a class="nav-link" id="indexTab" href="index.html"><img height="24" width="24" src="images/icon.png"/></a>
+          <a class="nav-link" id="indexTab" href="index.html">
+            <img height="24" width="24" src="images/icon.png" />
+          </a>
           <a class="nav-link" id="homeTab" href="home.html">Home</a>
           <a class="nav-link" id="teamTab" href="team.html">Team</a>
           <a class="nav-link" id="hackathonTab" href="hackathon.html">Hackathon</a>
@@ -63,6 +65,54 @@
       </div>
 
 
+      <h1 class="cover-heading">Change Leader</h1>
+      <div class="card" style="width: 50rem;">
+        <div class="card-body">
+          <form id="change-leader">
+            <div class="form-group row">
+              <label for="teamId" class="col-sm-2 col-form-label">Team Id</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="teamId" value="">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="hackthonId" class="col-sm-2 col-form-label">Hackthon Id</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="hackthonId" value="">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="newLeaderAddress" class="col-sm-2 col-form-label">New leader Add: </label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="newLeaderAddress" value="">
+              </div>
+            </div>
+            <button class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+
+
+      <h1 class="cover-heading">Winning teams Withdraw</h1>
+      <div class="card" style="width: 50rem;">
+        <div class="card-body">
+          <form id="withdraw">
+            <div class="form-group row">
+              <label for="teamId" class="col-sm-2 col-form-label">Team Id</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="teamId" value="">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="hackthonId" class="col-sm-2 col-form-label">Hackthon Id</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="hackthonId" value="">
+              </div>
+            </div>
+            <button class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
 
       <footer class="mastfoot mt-auto">
         <div class="inner">
@@ -111,6 +161,42 @@
       var value = '0';
       // helper to call a write call using nebpay
       writeCall(value, "createTeamForHackathon", callArgs);
+    });
+
+    $("#change-leader").submit(function (event) {
+      // get all the inputs into an array.
+      var $inputs = $('#change-leader :input');
+      // get an associative array of just the values.
+      var team = {};
+      $inputs.each(function () {
+        team[this.id] = $(this).val();
+      });
+
+      console.log("Handler for .submit() called.: " + JSON.stringify(team));
+      event.preventDefault();
+      var callArgs = [team.teamId, team.hackthonId, team.newLeaderAddress];
+      console.log('=====> callArgs: ' + callArgs);
+      var value = '0';
+      // helper to call a write call using nebpay
+      writeCall(value, "changeTeamLeader", callArgs);
+    });
+
+    $("#withdraw").submit(function (event) {
+      // get all the inputs into an array.
+      var $inputs = $('#withdraw :input');
+      // get an associative array of just the values.
+      var team = {};
+      $inputs.each(function () {
+        team[this.id] = $(this).val();
+      });
+
+      console.log("Handler for .submit() called.: " + JSON.stringify(team));
+      event.preventDefault();
+      var callArgs = [team.teamId, team.hackthonId];
+      console.log('=====> callArgs: ' + callArgs);
+      var value = '0';
+      // helper to call a write call using nebpay
+      writeCall(value, "withDraw", callArgs);
     });
   });
 </script>
