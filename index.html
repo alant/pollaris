@@ -79,23 +79,8 @@
   <script src="https://cdn.jsdelivr.net/npm/nebpay.js@0.2.0/dist/nebPay.min.js"></script>
 
 </body>
-<script>  
-  const Wallet = require('nebulas');
-  const NebPay = require('nebpay');
-  const HttpRequest = require('nebulas').HttpRequest;
-
-
-  var nebPay = new NebPay();
-  var account = new Wallet.Account(
-    '249e8e7a8ca2db4cbe29e2f2f42a2b2740b35408e36f26ed7a1c2561abcd3799'
-  );
-
-  const neb = new Wallet.Neb();
-  neb.setRequest(new HttpRequest('https://testnet.nebulas.io'));
-
-  var gasLimit = 200000;
-  var gasPrice = 1000000;
-
+<script src="./utils.js"></script>
+<script>
   //to check if the extension is installed
   //if the extension is installed, var "webExtensionWallet" will be injected in to web page
   if (typeof (webExtensionWallet) === "undefined") {
@@ -107,39 +92,13 @@
   // var contractAddr = "n1tMicsrXs7m3fmtywC9zjMDVUBYJBAg5p3";
   // testnet
   var contractAddr = "n1ri9ifiYH1aFv1ZkSHXx2MnuxZAQs4UudB";
+  var walletAddr = "n1JqiWKakmuymgXqCor9RxDnBkSiPbtmEjE";
 
   $(document).ready(function () {
     console.log('=> document ready!');
     $("#getBtn").click(function () {
       console.log("getBtn clicked");
-      var from = account.getAddressString()
-      var to = contractAddr;
-      var value = '0';
-      var callArgs = JSON.stringify([]);
-      console.log('=> account: ' + from);
-      const call = {
-        function: 'get',
-        args: callArgs
-      };
-      neb.api.getNebState().then((state) => {
-        console.log('getstate returned: ' + JSON.stringify(state));
-        neb.api
-          .call(
-            from,
-            to,
-            value,
-            '0',
-            gasPrice,
-            gasLimit,
-            call
-          )
-          .then((resp) => {
-            console.log('contract returned: ' + JSON.stringify(resp));
-            if (resp.execute_err.length > 0) {
-              throw new Error(resp.execute_err);
-            }
-          });
-      });
+      readCall("get", "", account.getAddressString(), contractAddr);
     });
 
     $("#newTeam").submit(function (event) {
@@ -153,35 +112,10 @@
 
       console.log("Handler for .submit() called.: " + JSON.stringify(team));
       event.preventDefault();
-
-      var from = account.getAddressString();
-      var to = contractAddr;
-      var value = '0';
       var callArgs = JSON.stringify([team.teamName, team.teamDesciption, team.teamURL]);
-      console.log('=> callArgs: ' + callArgs);
-      const call = {
-        function: 'createTeam',
-        args: callArgs
-      };
-      nebPay.call(to, value, call.function, call.args, {
-        listener: (resp) => {
-          console.log(`==> data return: ${JSON.stringify(resp)}`);
-          if (JSON.stringify(resp) === 'Error: Transaction rejected by user') {
-            console.log('=> transaction rejected');
-            return;
-          }
-          $.get("https://pay.nebulas.io/api/testnet/pay/query?payId=" + resp, function (_resp) {
-            console.log('=> pay.nebulas.io return: ' + JSON.stringify(_resp));
-          })
-          // if (data.resp.txhash) {
-          //   const txhash = data.resp.txhash;
-          //   console.log(`=> this transaction's hash: ${txhash}`);
-          // } else {
-          //   console.log('=> transaction failed');
-          // }
-        }
-      });
 
+      // helper to call a write call using nebpay
+      writeCall("createTeam", callArgs, walletAddr, contractAddr);
     });
   });
 </script>

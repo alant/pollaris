@@ -47,16 +47,8 @@
   <script src="https://cdn.jsdelivr.net/npm/nebpay.js@0.2.0/dist/nebPay.min.js"></script>
 
 </body>
+<script src="./utils.js"></script>
 <script>
-  const NebPay = require('nebpay');
-  const HttpRequest = require('nebulas').HttpRequest;
-  const Wallet = require('nebulas');
-  const neb = new Wallet.Neb();
-  neb.setRequest(new HttpRequest('http://localhost:8685'));
-  var nebPay = new NebPay();
-  var gasLimit = 200000;
-  var gasPrice = 1000000;
-
   // CONFIGURATION CONSTANTS
   // Put your local contract address:
   var contractAddr = "n21v5qwKEvxtbK1cMNL8kJNi1xDaVvcUXCP";
@@ -81,66 +73,11 @@
     console.log('=> document ready!');
     $("#getBtn").click(function () {
       console.log("getBtn clicked");
-      console.log("testing read function: "+readFunctionName);
-      var from = walletAddr;
-      var to = contractAddr;
-      var value = '0';
-      console.log('=> account: ' + from);
-      const readCall = {
-        function: readFunctionName,
-        args: readCallArgs
-      };
-
-      neb.api.getNebState().then((state) => {
-        console.log('getstate returned: ' + JSON.stringify(state));
-        neb.api
-          .call(
-            from,
-            to,
-            value,
-            '0',
-            gasPrice,
-            gasLimit,
-            readCall
-          )
-          .then((resp) => {
-            console.log('contract returned: ' + JSON.stringify(resp));
-            if (resp.execute_err.length > 0) {
-              throw new Error(resp.execute_err);
-            }
-          });
-      });
+      readCall(readFunctionName, readCallArgs, walletAddr, contractAddr);
     });
     $("#setBtn").click(function () {
       console.log("setBtn clicked");
-      console.log("testing write function: "+writeFunctionName);
-      var from = walletAddr;
-      var to = contractAddr;
-      var value = '0';
-      console.log('=> account: ' + from);
-      const writeCall = {
-        function: writeFunctionName,
-        args: writeCallArgs
-      };
-      nebPay.call(to, value, writeCall.function, writeCall.args, {
-        listener: (resp) => {
-          console.log(`==> data return: ${JSON.stringify(resp)}`);
-          if (JSON.stringify(resp) === 'Error: Transaction rejected by user') {
-            console.log('=> transaction rejected');
-            return;
-          }
-          $(document).get("https://pay.nebulas.io/api/testnet/pay/query?payId=" + resp, function (_resp) {
-            console.log('=> pay.nebulas.io return: ' + JSON.stringify(_resp));
-          })
-          // if (data.resp.txhash) {
-          //   const txhash = data.resp.txhash;
-          //   console.log(`=> this transaction's hash: ${txhash}`);
-          // } else {
-          //   console.log('=> transaction failed');
-          // }
-        }
-      });
-
+      writeCall(writeFunctionName, writeCallArgs, walletAddr, contractAddr);
     });
   });
 </script>
