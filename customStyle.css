@@ -28,3 +28,8 @@ nav {
 .team-card {
   padding: 5px;
 }
+
+.jumbotron {
+  background: #222930;
+  color: #E9E9E9;
+}
