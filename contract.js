@@ -256,7 +256,6 @@ var NebHackathonContract = function() {
   LocalContractStorage.defineProperties(this, {
     sayHack: '',
     curTeamId: 0,
-    curHackerId: 0,
     curHackathonId: 0,
     listOfAllHackerUsernames: {
       parse: function(value) {
@@ -275,6 +274,7 @@ NebHackathonContract.prototype = {
     this.curTeamId = 0;
     this.curHackerId = 0;
     this.curHackathonId = 0;
+    this.listOfAllTeamIds = [];
     this.listOfAllHackerUsernames = [];
   },
 
