@@ -22,7 +22,7 @@ function readCall(functionName, callArgs) {
     console.log('getstate returned: ' + JSON.stringify(state));
     neb.api
       .call(
-        walletAddr,
+        "n1JqiWKakmuymgXqCor9RxDnBkSiPbtmEjE",
         contractAddr,
         '0',
         '0',
