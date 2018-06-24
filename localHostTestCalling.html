@@ -24,8 +24,8 @@
     <main id="home" role="main" class="inner cover">
       <h1 class="cover-heading">cover-heading</h1>
 
-      <button id="getBtn" class="btn btn-secondary">Test</button>
-
+      <button id="getBtn" class="btn btn-secondary">Read</button>
+      <button id="setBtn" class="btn btn-secondary">Write</button>
       <footer class="mastfoot mt-auto">
         <div class="inner">
           Test calling functions on locally deployed contracts
@@ -59,12 +59,14 @@
 
   // CONFIGURATION CONSTANTS
   // Put your local contract address:
-  var contractAddr = "n1pHCLuFp44uiFnCZ29rP6gmvir1FtJvjBG";
+  var contractAddr = "n21v5qwKEvxtbK1cMNL8kJNi1xDaVvcUXCP";
   // Put your local wallet address:
   var walletAddr = "n1JqiWKakmuymgXqCor9RxDnBkSiPbtmEjE";
   // Put your function name and args:
-  var functionName = "createHackathon";
-  var callArgs = JSON.stringify([]  );
+  var readFunctionName = "getDebugInfo";
+  var readCallArgs = JSON.stringify([]);
+  var writeFunctionName = "createTeam";
+  var writeCallArgs = JSON.stringify(["abc", "awesome team", "abc.com"]);
 
   //to check if the extension is installed
   //if the extension is installed, var "webExtensionWallet" will be injected in to web page
@@ -79,13 +81,14 @@
     console.log('=> document ready!');
     $("#getBtn").click(function () {
       console.log("getBtn clicked");
+      console.log("testing read function: "+readFunctionName);
       var from = walletAddr;
       var to = contractAddr;
       var value = '0';
       console.log('=> account: ' + from);
-      const call = {
-        function: functionName,
-        args: callArgs
+      const readCall = {
+        function: readFunctionName,
+        args: readCallArgs
       };
 
       neb.api.getNebState().then((state) => {
@@ -98,7 +101,7 @@
             '0',
             gasPrice,
             gasLimit,
-            call
+            readCall
           )
           .then((resp) => {
             console.log('contract returned: ' + JSON.stringify(resp));
@@ -107,6 +110,37 @@
             }
           });
       });
+    });
+    $("#setBtn").click(function () {
+      console.log("setBtn clicked");
+      console.log("testing write function: "+writeFunctionName);
+      var from = walletAddr;
+      var to = contractAddr;
+      var value = '0';
+      console.log('=> account: ' + from);
+      const writeCall = {
+        function: writeFunctionName,
+        args: writeCallArgs
+      };
+      nebPay.call(to, value, writeCall.function, writeCall.args, {
+        listener: (resp) => {
+          console.log(`==> data return: ${JSON.stringify(resp)}`);
+          if (JSON.stringify(resp) === 'Error: Transaction rejected by user') {
+            console.log('=> transaction rejected');
+            return;
+          }
+          $(document).get("https://pay.nebulas.io/api/testnet/pay/query?payId=" + resp, function (_resp) {
+            console.log('=> pay.nebulas.io return: ' + JSON.stringify(_resp));
+          })
+          // if (data.resp.txhash) {
+          //   const txhash = data.resp.txhash;
+          //   console.log(`=> this transaction's hash: ${txhash}`);
+          // } else {
+          //   console.log('=> transaction failed');
+          // }
+        }
+      });
+
     });
   });
 </script>

@@ -194,6 +194,7 @@ NebHackathonContract.prototype = {
     var result = this.sayHack;
     return result;
   },
+<<<<<<< HEAD
   getDebugInfo: function() {
     return this;
   },
@@ -214,6 +215,8 @@ NebHackathonContract.prototype = {
 
   // api
 
+=======
+>>>>>>> afda0c1c298df5e4f5f3b1c55c946b569f09645c
   createHackathon: function(hackathonInfo) {
     var newHackathon = new Hackathon(hackathonInfo);
     this.allHackathons.set(newHackathon.id, newHackathon);
@@ -253,12 +256,19 @@ NebHackathonContract.prototype = {
     return hacker;
   },
   createTeam: function(_name, _desc, _url) {
+    var from = Blockchain.transaction.from;
+    var hacker = this.allHackers.get(from);
+    if (!hacker) {
+      hacker = new Hacker();
+      hacker.address = from;
+      this.allHackers.put(from, hacker);
+    }
     var team = new Team();
     team.name = _name;
     team.desc = _desc;
     team.url = _url;
-    var from = Blockchain.transaction.from;
     team.leader = from;
+    team.hackers = [].push(hacker);
     var _curId = this.curTeamId;
     team.id = _curId;
     this.allTeams.put(_curId, team);
@@ -304,6 +314,11 @@ NebHackathonContract.prototype = {
     }
     team.url = _url;
     this.allTeams.put(_curId, team);
+  },
+  getTeamReward: function(_id) {
+  var team = this.allTeams.get(_id);
+  var result = team.reward;
+  return result;
   }
 };
 
