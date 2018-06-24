@@ -48,26 +48,11 @@
 <!-- Nebulas stuff -->
 <script src="https://cdn.jsdelivr.net/npm/nebulas@0.5.2/dist/nebulas.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/nebpay.js@0.2.0/dist/nebPay.min.js"></script>
-
+<script src="./utils.js"></script>
 </body>
 </html>
 
 <script>
-  const Wallet = require('nebulas');
-  const NebPay = require('nebpay');
-  const HttpRequest = require('nebulas').HttpRequest;
-
-  var nebPay = new NebPay();
-  var account = new Wallet.Account(
-    '249e8e7a8ca2db4cbe29e2f2f42a2b2740b35408e36f26ed7a1c2561abcd3799'
-  );
-
-  const neb = new Wallet.Neb();
-  neb.setRequest(new HttpRequest('https://testnet.nebulas.io'));
-
-  var gasLimit = 200000;
-  var gasPrice = 1000000;
-
   //to check if the extension is installed
   //if the extension is installed, var "webExtensionWallet" will be injected in to web page
   if (typeof (webExtensionWallet) === "undefined") {
@@ -75,41 +60,9 @@
   } else {
     console.log("webExtensionWallet found");
   }
-  // mainnet
-  // var contractAddr = "n1tMicsrXs7m3fmtywC9zjMDVUBYJBAg5p3";
-  // testnet
-  var contractAddr = "n1qPSeL4Zb4Ptte1hBQHkmb3pxxszvY3BHs";
 
   $(document).ready(function () {
     console.log('=> document ready!');
-    console.log("get all teams");
-    var from = "n1Th2GEPme5dCPsM7ewoV8aMHLfjtKyDEm1"
-    var to = contractAddr;
-    var value = '0';
-    var callArgs = JSON.stringify([]);
-    // show all teams with
-    const allTeams = {
-      function: 'getAllTeamIds',
-      args:callArgs
-    };
-    neb.api.getNebState().then((state) => {
-      console.log('getstate returned: ' + JSON.stringify(state));
-    neb.api
-      .call(
-        from,
-        to,
-        value,
-        '0',
-        gasPrice,
-        gasLimit,
-        allTeams
-      )
-      .then((resp) => {
-      console.log('==> contract returned: ' + JSON.stringify(resp));
-    if (resp.execute_err.length > 0) {
-      throw new Error(resp.execute_err);
-    }
-  });
-  });
+    readCall('getAllTeamIds', []);
   });
 </script>

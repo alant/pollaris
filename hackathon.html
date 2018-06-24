@@ -83,21 +83,6 @@
 </body>
 <script src="./utils.js"></script>
 <script>
-  //to check if the extension is installed
-  //if the extension is installed, var "webExtensionWallet" will be injected in to web page
-  if (typeof (webExtensionWallet) === "undefined") {
-    console.log("webExtensionWallet NOT found!");
-  } else {
-    console.log("webExtensionWallet found");
-  }
-  // mainnet
-  // var contractAddr = "n1tMicsrXs7m3fmtywC9zjMDVUBYJBAg5p3";
-  // testnet
-  var contractAddr = "n1qPSeL4Zb4Ptte1hBQHkmb3pxxszvY3BHs";
-  // serial number for checking tx
-  var serialNumber;
-  var walletAddr = "n1JqiWKakmuymgXqCor9RxDnBkSiPbtmEjE";
-
   $(document).ready(function () {
     console.log('=> document ready!');
     $("#getBtn").click(function () {
@@ -120,7 +105,7 @@
       console.log('=====> callArgs: ' + callArgs);
       var value = '0';
       // helper to call a write call using nebpay
-      writeCall(contractAddr, value, "createTeam", callArgs);
+      writeCall(value, "createTeam", callArgs);
     });
   });
 </script>
