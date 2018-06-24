@@ -149,9 +149,11 @@ var NebHackathonContract = function() {
   LocalContractStorage.defineMapProperties(this, {
     allHackers: {
       parse: function(value) {
+        console.log(value);
         return new Hacker(value);
       },
       stringify: function(o) {
+        console.log(o);
         return o.toString();
       }
     },
@@ -183,9 +185,9 @@ var NebHackathonContract = function() {
 NebHackathonContract.prototype = {
   init: function() {
     this.sayHack = 'awesome hackathon';
-    this.allHackathons = [];
-    this.allHackers = [];
-    this.allTeams = [];
+    // this.allHackathons = [];
+    // this.allHackers = [];
+    // this.allTeams = [];
   },
 
   // status getters
@@ -194,7 +196,6 @@ NebHackathonContract.prototype = {
     var result = this.sayHack;
     return result;
   },
-<<<<<<< HEAD
   getDebugInfo: function() {
     return this;
   },
@@ -214,9 +215,6 @@ NebHackathonContract.prototype = {
   },
 
   // api
-
-=======
->>>>>>> afda0c1c298df5e4f5f3b1c55c946b569f09645c
   createHackathon: function(hackathonInfo) {
     var newHackathon = new Hackathon(hackathonInfo);
     this.allHackathons.set(newHackathon.id, newHackathon);
@@ -228,20 +226,27 @@ NebHackathonContract.prototype = {
     if (username === '' || address === '') {
       throw new Error('empty username / address');
     }
-
+    console.log("name.length checking");
     if (username.length > 64 || address.length > 64) {
       throw new Error('username / address exceed limit length');
     }
 
     var hacker = this.allHackers.get(username);
     if (hacker){
+      console.log("got this item");
       throw new Error("hacker username has been occupied");
+    } else {
+      console.log("didn't this item");
     }
+
 
     hacker = new Hacker();
     hacker.username = username;
     hacker.address = address;
+    console.log("before put hacker. created name: " + hacker.username + "address: " + hacker.address);
     this.allHackers.put(username, hacker);
+    var hacker2 = this.allHackers.get(username);
+    console.log("after put hacker2. created name: " + hacker2.username + "address: " + hacker2.address);
   },
 
   getHacker: function(username) {
@@ -249,12 +254,16 @@ NebHackathonContract.prototype = {
     if (username === '') {
       throw new Error('empty username');
     }
-    var hacker = this.hackers.get(username);
-    if (!hacker) {
-      throw new Error('hacker username has been occupied');
+    var hacker = this.allHackers.get(username);
+    if (hacker) {
+      console.log("created name: " + hacker.username + "address: " + hacker.address);
+    } else {
+      console.log("fail to get item " + username);
     }
+
     return hacker;
   },
+
   createTeam: function(_name, _desc, _url) {
     var from = Blockchain.transaction.from;
     var hacker = this.allHackers.get(from);
