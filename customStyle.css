@@ -5,3 +5,11 @@ body {
 .hackathon-card {
   cursor: pointer;
 }
+
+.teams-container{
+  display: flex;
+}
+
+.team-card{
+  padding:5px;
+}

@@ -31,7 +31,6 @@
     </div>
     <div class="teams-container">
     </div>
-
   </main>
 
   <footer class="footer">
@@ -113,7 +112,7 @@
           innerElement += `</tbody></table>`;
           $(".teams-container").append(`
               <div class="team-card" style="width: 18rem;">
-                <img class="card-img-top" src="./images/team${i % 4 + 1}.jpg" alt="Card image cap">
+                <img class="card-img-top" src="./images/team${i % 3 + 1}.jpg" alt="Card image cap">
                   <div class="card-body">
                     <h5 class="card-title">Team Name: ${team.teamName}</h5>
                     <p class="card-text">Leader Addr: ${team.leader.substring(0, 4)}...${team.leader.substring(team.leader.length - 4)}</p>
