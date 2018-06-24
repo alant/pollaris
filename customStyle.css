@@ -1,17 +1,14 @@
 body {
-  padding-top: 4.5rem;
 }
 
-.hackathon-card {
-  cursor: pointer;
+footer {
+  bottom: 0;
+  position: absolute;
+  width: 100%;
 }
 
-.teams-container {
-  display: flex;
-}
-
-.team-card {
-  padding:5px;
+nav {
+  padding: .5rem 0 1rem 0;
 }
 
 .hackathon-container {
@@ -19,11 +16,15 @@ body {
 }
 
 .hackathon-card {
-  margin: 50px;
+  cursor: pointer;
+  margin: 0 1rem 1rem 0;
+  width: 18rem;
 }
 
-/*.hackathon-container .img {*/
-  /*display: block;*/
-  /*width: 100%;*/
-  /*height: auto;*/
-/*}*/
+.teams-container {
+  display: flex;
+}
+
+.team-card {
+  padding: 5px;
+}
