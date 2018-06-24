@@ -373,7 +373,9 @@ NebHackathonContract.prototype = {
       throw new Error('can not vote finished hackathon');
     }
     hackathon.votes.push(vote);
-    hackathon.rewardPool += value;
+    value = new BigNumber(value);
+    var _rewardPool = new BigNumber(hackathon.rewardPool);
+    hackathon.rewardPool = _rewardPool.add(value);
     hackathon.allTeams[teamId].voteNum = new BigNumber(
       hackathon.allTeams[teamId].voteNum
     ).add(new BigNumber(value));
