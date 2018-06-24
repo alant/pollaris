@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
     crossorigin="anonymous">
   <!-- Custom styles for this template -->
-  <link href="customStyle.css" rel="stylesheet">
+  <link href="./customStyle.css" rel="stylesheet">
 
   <title>Game duel platform </title>
 </head>
@@ -98,15 +98,15 @@
         }
         const promises = Promise.all(pArray);
         promises.then((results) => {
-          console.log(`==>promiseall: ${JSON.stringify(results)}`);
           results.forEach((hackathon, i) => {
+            console.log(`=====>>>promiseall: ${JSON.stringify(hackathon)}`);
             $(".hackathon-container").append(`
-              <div class="card" style="width: 18rem;">
-                <img class="card-img-top" src="./images/hackathon${i + 1}.png" alt="Card image cap">
+              <div class="hackathon-card" style="width: 18rem;">
+                <img class="card-img-top" src="./images/hackathon${i % 3 + 1}.png" alt="Card image cap">
                   <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                    <h5 class="card-title">${JSON.parse(hackathon.result).name}</h5>
+                    <p class="card-text">${JSON.parse(hackathon.result).desc}</p>
+                    <p class="card-text">${JSON.parse(hackathon.result).url}</p>
                   </div>
               </div>
           `);
