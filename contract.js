@@ -487,7 +487,8 @@ NebHackathonContract.prototype = {
     if (from !== leader) {
       throw new Error('only leader can withdraw');
     }
-    var awardValue = hackathon.allTeams[_teamId].reward.floor();
+    var awardValue = new BigNumber(hackathon.allTeams[_teamId].reward);
+    awardValue = awardValue.floor();
     if (awardValue.gt(new BigNumber(0))) {
       var result = Blockchain.transfer(from, awardValue);
       if (!result) {
