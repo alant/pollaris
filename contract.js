@@ -46,6 +46,7 @@ Team.prototype = {
       this.reward = obj.reward;
       this.description = obj.description;
       this.url = obj.url;
+      this.voteNum = obj.voteNum;
     } else {
       this.id = 0;
       this.teamName = '';
@@ -54,41 +55,7 @@ Team.prototype = {
       this.reward = new BigNumber(0);
       this.description = '';
       this.url = '';
-    }
-  }
-};
-
-// Hackathon
-
-var Hackathon = function(obj) {
-  this.parse(obj);
-};
-
-Hackathon.prototype = {
-  toString: function() {
-    return JSON.stringify(this);
-  },
-
-  parse: function(text) {
-    if (text) {
-      var obj = JSON.parse(text);
-      this.id = obj.id;
-      this.name = obj.name;
-      this.desc = obj.desc;
-      this.url = obj.url;
-      this.teams = obj.teams;
-      this.votes = obj.votes;
-      this.rewardPool = obj.rewardPool;
-      this.sponsors = obj.sponsors;
-    } else {
-      this.id = 0;
-      this.name = '';
-      this.desc = '';
-      this.url = '';
-      this.teams = [];
-      this.votes = [];
-      this.rewardPool = new BigNumber(0);
-      this.sponsors = [];
+      this.voteNum = new BigNumber(0);
     }
   }
 };
@@ -110,12 +77,131 @@ Vote.prototype = {
       this.hackthonId = obj.hackthonId;
       this.teamId = obj.teamId;
       this.value = obj.value;
+      this.reward = obj.reward;
     } else {
       this.from = '';
       this.hackthonId = 0;
       this.teamId = 0;
       this.value = new BigNumber(0);
+      this.reward = new BigNumber(0);
     }
+  }
+};
+
+// Hackathon
+
+var Hackathon = function(obj) {
+  this.parse(obj);  
+};
+
+Hackathon.prototype = {
+  toString: function() {
+    return JSON.stringify(this);
+  },
+
+  parse: function(text) {
+    if (text) {
+      var obj = JSON.parse(text);
+      this.id = obj.id;
+      this.name = obj.name;
+      this.desc = obj.desc;
+      this.url = obj.url;
+      this.votes = obj.votes;
+      this.rewardPool = obj.rewardPool;
+      this.sponsors = obj.sponsors;
+      this.isFinished = false;
+      this.result = obj.result;
+      this.allTeams = obj.allTeams;
+      this.curTeamId = obj.curTeamId;
+    } else {
+      this.id = 0;
+      this.name = '';
+      this.desc = '';
+      this.url = '';
+      this.votes = [];
+      this.rewardPool = new BigNumber(0);
+      this.sponsors = [];
+      this.isFinished = false;
+      this.result = ''
+      this.allTeams = [];
+      this.curTeamId = 0;
+    }
+  },
+
+  getTeam: function(_id) {
+    var team = this.allTeams.get(_id);
+    return team;
+  },
+
+  changeTeamLeader: function(_id, _leader) {
+    var from = Blockchain.transaction.from;
+    var team = this.allTeams[_id];
+    var oldLeader = team.leader;
+    if (from !== oldLeader) {
+      throw new Error('changeTeamLeader: only leader can');
+    }
+    team.leader = _leader;
+    this.allTeams[_curId] = team;
+  },
+
+  changeTeamName: function(_id, _name) {
+    var from = Blockchain.transaction.from;
+    var team = this.allTeams[_id];
+    if (from !== team.leader) {
+      throw new Error('changeTeamName: only leader can');
+    }
+    team.name = _name;
+    this.allTeams[_curId] = team;
+  },
+
+  changeTeamDesc: function(_id, _desc) {
+    var from = Blockchain.transaction.from;
+    var team = this.allTeams[_id];
+    if (from !== team.leader) {
+      throw new Error('changeTeamDesc: only leader can');
+    }
+    team.desc = _desc;
+    this.allTeams[_curId] = team;
+  },
+
+  changeTeamUrl: function(_id, _url) {
+    var from = Blockchain.transaction.from;
+    var team = this.allTeams[_id];
+    if (from !== team.leader) {
+      throw new Error('changeTeamUrl: only leader can');
+    }
+    team.url = _url;
+    this.allTeams[_curId] = team;
+  },
+
+  getTeamReward: function(_id) {
+    var team = this.allTeams[_id];
+    var result = team.reward;
+    return result;
+  },
+
+  getAllTeams: function() {
+    return this.allTeams;
+  },
+
+  finishHackthon: function() {
+    if (this.allTeams.length < 3) {
+      return "less then 3 teams fail to finish hackthon";
+    }
+    this.isFinished = true;
+    // find the winner team
+    this.allTeams.sort(function (a, b) {
+        return new BigNumber(a.voteNum).sub(new BigNumber(b.voteNum));
+    });
+
+    this.allTeams[0].reward = new BigNumber(this.rewardPool).mul(0.6);
+    this.allTeams[1].reward = new BigNumber(this.rewardPool).mul(0.3);
+    this.allTeams[2].reward = new BigNumber(this.rewardPool).mul(0.1);
+
+    var result = [this.allTeams[0], this.allTeams[1], this.allTeams[2]];
+    // calculate the reward
+    this.result = result;
+    return result;
   }
 };
 
@@ -147,6 +233,7 @@ Sponsor.prototype = {
 
 var NebHackathonContract = function() {
   LocalContractStorage.defineMapProperties(this, {
+
     allHackers: {
       parse: function(value) {
         return new Hacker(value);
@@ -155,14 +242,7 @@ var NebHackathonContract = function() {
         return o.toString();
       }
     },
-    allTeams: {
-      parse: function(value) {
-        return new Team(value);
-      },
-      stringify: function(o) {
-        return o.toString();
-      }
-    },
+    
     allHackathons: {
       parse: function(value) {
         return new Hackathon(value);
@@ -172,18 +252,12 @@ var NebHackathonContract = function() {
       }
     }
   });
+
   LocalContractStorage.defineProperties(this, {
     sayHack: '',
     curTeamId: 0,
+    curHackerId: 0,
     curHackathonId: 0,
-    listOfAllTeamIds: {
-      parse: function(value) {
-        return JSON.parse(value);
-      },
-      stringify: function(o) {
-        return JSON.stringify(o);
-      }
-    },
     listOfAllHackerUsernames: {
       parse: function(value) {
         return JSON.parse(value);
@@ -199,8 +273,8 @@ NebHackathonContract.prototype = {
   init: function() {
     this.sayHack = 'awesome hackathon';
     this.curTeamId = 0;
+    this.curHackerId = 0;
     this.curHackathonId = 0;
-    this.listOfAllTeamIds = [];
     this.listOfAllHackerUsernames = [];
   },
 
@@ -210,23 +284,42 @@ NebHackathonContract.prototype = {
     var result = this.sayHack;
     return result;
   },
-  getTeamReward: function(_id) {
-    var team = this.allTeams.get(_id);
-    var result = team.reward;
+
+  getTeamRewardFromCurrentHackathon: function(_id) {
+    var hackathon = this.getHackathon(_hackathon_id);
+    var result = hackathon.allTeams[_id].reward;
     return result;
   },
-  getAllTeams: function() {
-    var allTeams = []
-    this.listOfAllTeamIds.forEach(function(_id){
-      allTeams.concat(this.allTeams.get(_id));
-    });
-    return allTeams;
+
+  getTeamReward: function(_id, _hackathon_id) {
+    var hackathon = this.getHackathon(_hackathon_id);
+    var result = hackathon.allTeams[_id].reward;
+    return result;
   },
-  getAllTeamIds: function() {
-    return this.listOfAllTeamIds;
+
+  getAllTeamsBasedOnHackathonId: function(_hackathon_id) {
+    var hackathon = this.allHackathons.get(_hackathon_id);
+    if (!hackathon) {
+      throw new Error('no hackathon');
+    }
+
+    if (!hackathon.allTeams) {
+      throw new Error('no hackathon.allTeams');
+    }
+
+    return hackathon.allTeams;
   },
 
   // hackathon API
+  getDebugInfo: function() {
+    return this;
+  },
+  getAllHackathon: function() {
+    return this.allHackathons;
+  },
+  getAllHackers: function() {
+    return this.allHackers;
+  },
 
   createHackathon: function(_name, _desc, _url) {
     var newHackathon = new Hackathon();
@@ -247,7 +340,17 @@ NebHackathonContract.prototype = {
   getCurHackathonId: function() {
     return this.curHackathonId;
   },
-  // hacker API
+
+  getHackathon: function(newHackathon_id) {
+    var hackathon = this.allHackathons.get(newHackathon_id);
+    if (hackathon) {
+      console.log("get hackathon: " + newHackathon_id);
+    } else {
+      console.log("fail to get hackathon " + newHackathon_id);
+    }
+
+    return hackathon;
+  },
 
   createHacker: function(username, address) {
     if (username === '' || address === '') {
@@ -278,11 +381,28 @@ NebHackathonContract.prototype = {
     this.listOfAllHackerUsernames = list;
   },
 
-  getHacker: function(username) {
-    username = username.trim();
-    if (username === '') {
-      throw new Error('empty username');
+  vote : function(teamId, hackathon_id) {
+    var from = Blockchain.transaction.from;
+    var value = Blockchain.transaction.value;
+
+    var vote = new Vote();
+    vote.from = from;
+    vote.hackthonId = hackathon_id;
+    vote.teamId = teamId;
+    vote.value = value;
+
+    var hackathon = this.getHackathon(hackathon_id);
+    if (hackathon.isFinished) {
+      throw new Error("can not vote finished hackathon");
     }
+    hackathon.votes.push(vote);
+    hackathon.rewardPool += value;
+    hackathon.allTeams[teamId].voteNum = new BigNumber(hackathon.allTeams[teamId].voteNum).add(new BigNumber(value));
+
+    this.allHackathons.set(hackathon.id, hackathon);
+  },
+
+  getHacker: function(username) {
     var hacker = this.allHackers.get(username);
     if (hacker) {
       console.log("created name: " + hacker.username + "address: " + hacker.address);
@@ -295,9 +415,11 @@ NebHackathonContract.prototype = {
     return this.listOfAllHackerUsernames;
   },
 
-  // team API
-
-  createTeam: function(_name, _desc, _url) {
+  createTeamForHackathon: function(_name, _desc, _url, _hackathon_id) {
+    var hackathon = this.getHackathon(_hackathon_id);
+    if (!hackathon) {
+      console.log("fail to get hackathon " + _hackathon_id);
+    }
     var from = Blockchain.transaction.from;
     var hacker = this.allHackers.get(from);
     if (!hacker) {
@@ -305,63 +427,46 @@ NebHackathonContract.prototype = {
       hacker.address = from;
       this.allHackers.put(from, hacker);
     }
+
     var team = new Team();
     team.name = _name;
     team.desc = _desc;
     team.url = _url;
     team.leader = from;
-    var _hackers = [];
-    _hackers.push(hacker);
-    team.hackers = _hackers;
-    var _curId = this.curTeamId;
+    team.hackers = [].push(hacker);
+
+    var _curId = hackathon.curTeamId;
     team.id = _curId;
-    this.allTeams.put(_curId, team);
-    this.curTeamId = _curId + 1;
-    var list = this.listOfAllTeamIds;
-    list.push(_curId);
-    this.listOfAllTeamIds = list;
+    console.log("team: " + hackathon.allTeams);
+    var allteams = hackathon.allTeams;
+    allteams.push(team);
+    console.log("team: " + team);
+    console.log("team: " + hackathon.allTeams);
+
+    hackathon.curTeamId = _curId + 1;
+
+    this.allHackathons.set(hackathon.id, hackathon);
   },
-  getTeam: function(_id) {
-    var team = this.allTeams.get(_id);
-    return team;
+
+  finishHackathon: function (_hackathon_id) {
+    var hackathon = this.getHackathon(_hackathon_id);
+    var hackathonResult = hackthon.finishHackathon();
+    this.allHackathons.set(hackathon.id, hackathon);
+    return hackathonResult;
   },
-  changeTeamLeader: function(_id, _leader) {
-    var from = Blockchain.transaction.from;
-    var team = this.allTeams.get(_id);
-    var oldLeader = team.leader;
-    if (from !== oldLeader) {
-      throw new Error('changeTeamLeader: only leader can');
+
+  getHackathonResult: function (_hackathon_id) {
+    var hackathon = this.getHackathon(_hackathon_id);
+    if (!hackathon.isFinished) {
+      throw new Error('can not fetch result from on going hackathon');
     }
-    team.leader = _leader;
-    this.allTeams.put(_curId, team);
+    return hackathon.result;
   },
-  changeTeamName: function(_id, _name) {
-    var from = Blockchain.transaction.from;
-    var team = this.allTeams.get(_id);
-    if (from !== team.leader) {
-      throw new Error('changeTeamName: only leader can');
-    }
-    team.name = _name;
-    this.allTeams.put(_curId, team);
-  },
-  changeTeamDesc: function(_id, _desc) {
-    var from = Blockchain.transaction.from;
-    var team = this.allTeams.get(_id);
-    if (from !== team.leader) {
-      throw new Error('changeTeamDesc: only leader can');
-    }
-    team.desc = _desc;
-    this.allTeams.put(_curId, team);
-  },
-  changeTeamUrl: function(_id, _url) {
-    var from = Blockchain.transaction.from;
-    var team = this.allTeams.get(_id);
-    if (from !== team.leader) {
-      throw new Error('changeTeamUrl: only leader can');
-    }
-    team.url = _url;
-    this.allTeams.put(_curId, team);
-  },
+
+  getHackathonTeamFromHackathonId: function (_team_id, _hackathon_id) {
+    var hackathon = this.getHackathon(_hackathon_id);
+    return hackathon.allTeams.get(_team_id);
+  }
 };
 
 module.exports = NebHackathonContract;
