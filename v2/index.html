@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
     crossorigin="anonymous">
-  <link href="./customStyle.css" rel="stylesheet">
+  <link href="../customStyle.css" rel="stylesheet">
   <title>Pollaris: platform for hackathons</title>
 </head>
 
@@ -14,7 +14,7 @@
     <div class="inner">
       <nav class="nav nav-masthead justify-content-center" id="navMenu">
         <a class="nav-link" id="indexTab" href="index.html">
-          <img height="24" width="24" src="images/icon.png" />
+          <img height="24" width="24" src="../images/icon.png" />
         </a>
         <a class="nav-link" id="homeTab" href="home.html">Home</a>
         <a class="nav-link" id="teamTab" href="team.html">Team</a>
@@ -47,9 +47,9 @@
     crossorigin="anonymous"></script>
   <!-- Nebulas stuff -->
   <script src="https://cdn.jsdelivr.net/npm/nebulas@0.5.2/dist/nebulas.js"></script>
-  <script src=lib/nebPay.js></script>
-  <script src="./utils.js"></script>
-  <script src="./config.js"></script>
+  <script src=../lib/nebPay.js></script>
+  <script src="../utils.js"></script>
+  <script src="../config.js"></script>
 </body>
 <script>
   $(document).ready(function () {
@@ -67,7 +67,7 @@
           console.log(`=====>>>promiseall: ${JSON.stringify(hackathon)}`);
           $(".hackathon-container").append(`
               <div class="hackathon-card" id="${i}" style="width: 18rem;">
-                <img class="card-img-top" src="./images/hackathon${i % 3 + 1}.png" alt="Card image cap">
+                <img class="card-img-top" src="../images/hackathon${i % 3 + 1}.png" alt="Card image cap">
                   <div class="card-body">
                     <h5 class="card-title">${JSON.parse(hackathon.result).name}</h5>
                     <p class="card-text">${JSON.parse(hackathon.result).desc}</p>
@@ -113,7 +113,7 @@
           innerElement += `</tbody></table>`;
           $(".teams-container").append(`
               <div class="team-card" style="width: 18rem;">
-                <img class="card-img-top" src="./images/team${i % 4 + 1}.jpg" alt="Card image cap">
+                <img class="card-img-top" src="../images/team${i % 4 + 1}.jpg" alt="Card image cap">
                   <div class="card-body">
                     <h5 class="card-title">Team Name: ${team.teamName}</h5>
                     <p class="card-text">Leader Addr: ${team.leader.substring(0, 7)}...</p>
