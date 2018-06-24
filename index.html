@@ -116,7 +116,7 @@
                 <img class="card-img-top" src="./images/team${i % 4 + 1}.jpg" alt="Card image cap">
                   <div class="card-body">
                     <h5 class="card-title">Team Name: ${team.teamName}</h5>
-                    <p class="card-text">Leader Addr: ${team.leader.substring(0, 7)}...</p>
+                    <p class="card-text">Leader Addr: ${team.leader.substring(team.leader.length - 5)}</p>
                     <h5 class="card-title">Team Members:</h5>
                     ${innerElement}
                   </div>
