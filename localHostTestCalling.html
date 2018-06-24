@@ -24,8 +24,8 @@
     <main id="home" role="main" class="inner cover">
       <h1 class="cover-heading">cover-heading</h1>
 
-      <button id="getBtn" class="btn btn-secondary">Test</button>
-
+      <button id="getBtn" class="btn btn-secondary">Read</button>
+      <button id="setBtn" class="btn btn-secondary">Write</button>
       <footer class="mastfoot mt-auto">
         <div class="inner">
           Test calling functions on locally deployed contracts
@@ -34,7 +34,6 @@
         </div>
       </footer>
   </div>
-
 
   <!-- Bootstrap CSS -->
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -48,24 +47,18 @@
   <script src="https://cdn.jsdelivr.net/npm/nebpay.js@0.2.0/dist/nebPay.min.js"></script>
 
 </body>
+<script src="./utils.js"></script>
 <script>
-  const NebPay = require('nebpay');
-  const HttpRequest = require('nebulas').HttpRequest;
-  const Wallet = require('nebulas');
-  const neb = new Wallet.Neb();
-  neb.setRequest(new HttpRequest('http://localhost:8685'));
-  var nebPay = new NebPay();
-  var gasLimit = 200000;
-  var gasPrice = 1000000;
-
   // CONFIGURATION CONSTANTS
   // Put your local contract address:
-  var contractAddr = "n1pHCLuFp44uiFnCZ29rP6gmvir1FtJvjBG";
+  var contractAddr = "n21v5qwKEvxtbK1cMNL8kJNi1xDaVvcUXCP";
   // Put your local wallet address:
   var walletAddr = "n1JqiWKakmuymgXqCor9RxDnBkSiPbtmEjE";
   // Put your function name and args:
-  var functionName = "createHackathon";
-  var callArgs = JSON.stringify([]  );
+  var readFunctionName = "getDebugInfo";
+  var readCallArgs = JSON.stringify([]);
+  var writeFunctionName = "createTeam";
+  var writeCallArgs = JSON.stringify(["abc", "awesome team", "abc.com"]);
 
   //to check if the extension is installed
   //if the extension is installed, var "webExtensionWallet" will be injected in to web page
@@ -80,34 +73,11 @@
     console.log('=> document ready!');
     $("#getBtn").click(function () {
       console.log("getBtn clicked");
-      var from = walletAddr;
-      var to = contractAddr;
-      var value = '0';
-      console.log('=> account: ' + from);
-      const call = {
-        function: functionName,
-        args: callArgs
-      };
-
-      neb.api.getNebState().then((state) => {
-        console.log('getstate returned: ' + JSON.stringify(state));
-        neb.api
-          .call(
-            from,
-            to,
-            value,
-            '0',
-            gasPrice,
-            gasLimit,
-            call
-          )
-          .then((resp) => {
-            console.log('contract returned: ' + JSON.stringify(resp));
-            if (resp.execute_err.length > 0) {
-              throw new Error(resp.execute_err);
-            }
-          });
-      });
+      readCall(readFunctionName, readCallArgs, walletAddr, contractAddr);
+    });
+    $("#setBtn").click(function () {
+      console.log("setBtn clicked");
+      writeCall(writeFunctionName, writeCallArgs, walletAddr, contractAddr);
     });
   });
 </script>
