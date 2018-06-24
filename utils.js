@@ -47,9 +47,6 @@ function writeCall(value, functionName, callArgs) {
     function: functionName,
     args: JSON.stringify(callArgs)
   };
-  var promise1 = new Promise(function(resolve, reject) {
-  setTimeout(resolve, 100, 'foo');
-  });
   nebPay.call(contractAddr, value, writeCall.function, writeCall.args, {
     listener: (resp) => {
       console.log(`==> data return: ${JSON.stringify(resp)}`);
@@ -62,4 +59,44 @@ function writeCall(value, functionName, callArgs) {
       });
     }
   });
+}
+
+function pollTransactionStatus(txHash, maxRetry) {
+  neb.api.getTransactionReceipt({txHash})
+  .then(function(receipt) {
+    if (receipt.status == 0) {
+      postNotification('transaction '+txHash+'failed');
+    } else if (receipt.status == 1) {
+      postNotification('transaction '+txHash+'is successful');
+    } else {
+      if (maxRetry!=0) {
+        // retry after 3 seconds
+        setTimeOut(pollTransactionStatus(txHash, maxRetry - 1), 3000);
+      }
+      // stop retrying and do not post info
+    }
+  });
+}
+
+function postNotification(msg) {
+  // Let's check if the browser supports notifications
+  if (!("Notification" in window)) {
+    return;
+  }
+
+  // Let's check whether notification permissions have already been granted
+  else if (Notification.permission === "granted") {
+    // If it's okay let's create a notification
+    var notification = new Notification(msg);
+  }
+
+  // Otherwise, we need to ask the user for permission
+  else if (Notification.permission !== 'denied') {
+    Notification.requestPermission(function (permission) {
+      // If the user accepts, let's create a notification
+      if (permission === "granted") {
+        var notification = new Notification(msg);
+      }
+    });
+  }
 }
