@@ -16,7 +16,6 @@
 
 <body class="text-center">
 <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-<<<<<<< Updated upstream
   <header class="masthead mb-auto">
     <div class="inner">
       <nav class="nav nav-masthead justify-content-center" id="navMenu">
@@ -28,19 +27,6 @@
       </nav>
     </div>
   </header>
-=======
-    <header class="masthead mb-auto">
-        <div class="inner">
-            <h3 class="masthead-brand">Pollaris</h3>
-            <nav class="nav nav-masthead justify-content-center" id="navMenu">
-                <a class="nav-link active" id="indexTab" href="index.html">Index</a>
-                <a class="nav-link active" id="homeTab" href="home.html">Home</a>
-                <a class="nav-link" id="teamTab" href="team.html">Team</a>
-                <a class="nav-link" id="hackathonTab" href="hackathon.html">Hackathon</a>
-            </nav>
-        </div>
-    </header>
->>>>>>> Stashed changes
     <main id="home" role="main" class="inner cover">
         <h1 class="cover-heading">Sign up for hacker</h1>
         <div class="card" style="width: 50rem;">
@@ -96,13 +82,6 @@
   } else {
     console.log("webExtensionWallet found");
   }
-  // mainnet
-  // var contractAddr = "n1tMicsrXs7m3fmtywC9zjMDVUBYJBAg5p3";
-  // testnet
-  var contractAddr = "n1iwhwk7xpK2U1WyDyDmDbRpEqSWhqiuomi";
-  // serial number for checking tx
-  var serialNumber;
-  var walletAddr = "n1JqiWKakmuymgXqCor9RxDnBkSiPbtmEjE";
 
   $(document).ready(function () {
     console.log('=> document ready!');
@@ -112,7 +91,7 @@
       // get an associative array of just the values.
       var hacker = {};
       $inputs.each(function () {
-        hacker[this.username] = $(this).val();
+        hacker[this.id] = $(this).val();
       });
 
       console.log("Handler for .submit() called.: " + JSON.stringify(hacker));
@@ -121,7 +100,7 @@
       console.log('=====> callArgs: ' + callArgs);
       var value = '0';
       // helper to call a write call using nebpay
-      writeCall(contractAddr, value, "createHacker", callArgs);
+      writeCall(value, "createHacker", callArgs);
     });
   });
 </script>
