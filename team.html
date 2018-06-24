@@ -11,7 +11,7 @@
   <!-- Custom styles for this template -->
   <link href="customStyle.css" rel="stylesheet">
 
-  <title>Game duel platform </title>
+  <title>team </title>
 </head>
 
 <body class="text-center">
@@ -22,15 +22,43 @@
         <nav class="nav nav-masthead justify-content-center" id="navMenu">
           <a class="nav-link active" id="indexTab" href="index.html">Index</a>
           <a class="nav-link active" id="homeTab" href="home.html">Home</a>
-          <a class="nav-link" id="teamTab" href="team.html">Team</a>
-          <a class="nav-link" id="hackathonTab" href="hackathon.html">Hackathon</a>
-          <a class="nav-link active" id="HackerTab" href="hacker.html">Hacker</a>
+          <a class="nav-link" id="" href="hacker.html">Hacker</a>
+          <a class="nav-link" id="homeTab" href="team.html">Home</a>
         </nav>
       </div>
     </header>
     <main id="home" role="main" class="inner cover">
-      <h1 class="cover-heading">cover-heading</h1>
+      <h1 class="cover-heading">team page</h1>
       <button id="getBtn" class="btn btn-secondary">Test</button>
+
+      <div class="card" style="width: 50rem;">
+        <div class="card-body">
+          <form id="newTeam">
+
+            <div class="form-group row">
+              <label for="teamName" class="col-sm-2 col-form-label">Team Name</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="teamName" value="">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="teamDesciption" class="col-sm-2 col-form-label">Team Description</label>
+              <div class="col-sm-10">
+                <textarea class="form-control" id="teamDesciption" rows="3"></textarea>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="teamURL" class="col-sm-2 col-form-label">URL: </label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="teamURL" value="">
+              </div>
+            </div>
+            <button class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+
+
 
       <footer class="mastfoot mt-auto">
         <div class="inner">
