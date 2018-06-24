@@ -24,6 +24,8 @@
 
     <div class="hackathon-container">
     </div>
+    <div class="teams-container">
+    </div>
 
   </main>
 
@@ -59,7 +61,7 @@
         results.forEach((hackathon, i) => {
           console.log(`=====>>>promiseall: ${JSON.stringify(hackathon)}`);
           $(".hackathon-container").append(`
-              <div class="hackathon-card" style="width: 18rem;">
+              <div class="hackathon-card" id="${i}" style="width: 18rem;">
                 <img class="card-img-top" src="./images/hackathon${i % 3 + 1}.png" alt="Card image cap">
                   <div class="card-body">
                     <h5 class="card-title">${JSON.parse(hackathon.result).name}</h5>
@@ -71,6 +73,58 @@
         });
       });
     });
+
+    $(document).on('click', "div.hackathon-card", function () {
+      var liId = $(this).attr("id");
+      console.log("===>>> clicked on div: " + liId);
+      $(".hackathon-container").html('');
+      loadAllTeams();
+
+    });
+
+    function loadAllTeams() {
+      readCall("getAllTeamIds", []).then((resp, code, msg) => {
+        console.log('====> util: ' + JSON.stringify(resp));
+        let pArray = JSON.parse(resp.result).map((teamId) => {
+          console.log('getting team :' + JSON.stringify(teamId));
+          return readCall("getTeam", [teamId]);
+        });
+        const promises = Promise.all(pArray);
+        promises.then((results) => {
+          results.forEach((team, i) => {
+            console.log(`=====>>>promiseall: ${JSON.stringify(team)}`);
+            var innerElement = `
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Username</th>
+                  <th scope="col">Address</th>
+                </tr>
+              </thead>
+              <tbody>
+            ` ;
+            var hackers = JSON.parse(team.result).hackers;
+            hackers.forEach((hacker) => {
+              innerElement += `<td> ${hacker.username}</td>`;
+              innerElement += `<td> ${hacker.address}</td>`;
+              innerElement += '</tr>';
+            });
+            innerElement += `</tbody></table>`;
+            $(".teams-container").append(`
+              <div class="team-card" style="width: 18rem;">
+                <img class="card-img-top" src="./images/hackathon${i % 3 + 1}.png" alt="Card image cap">
+                  <div class="card-body">
+                    <h5 class="card-title">Team Name: ${JSON.parse(team.result).teamName}</h5>
+                    <p class="card-text">Leader Addr: ${JSON.parse(team.result).leader.substring(0, 7)}...</p>
+                    ${innerElement}
+                  </div>
+              </div>
+          `);
+          });
+        });
+      });
+    }
+
   });
 
 </script>
