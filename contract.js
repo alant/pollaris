@@ -217,14 +217,23 @@ NebHackathonContract.prototype = {
   },
   getAllTeamIds: function() {
     return this.listOfAllTeamIds;
-  }
+  },
 
   // hackathon API
 
-  createHackathon: function(hackathonInfo) {
-    var newHackathon = new Hackathon(hackathonInfo);
+  createHackathon: function(_name, _desc, _url) {
+    var newHackathon = new Hackathon();
+    newHackathon.name = _name;
+    newHackathon.desc = _desc;
+    newHackathon.url = _url;
+    var curId = this.curHackathonId;
+    newHackathon.id = curId;
     this.allHackathons.set(newHackathon.id, newHackathon);
-    var result = this.allHackathons;
+    this.curHackathonId = curId + 1;
+  },
+
+  getHackathon: function(_id) {
+    var result = this.allHackathons.get(_id);
     return result;
   },
 
