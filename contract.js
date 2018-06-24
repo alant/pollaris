@@ -226,7 +226,7 @@ NebHackathonContract.prototype = {
     newHackathon.name = _name;
     newHackathon.desc = _desc;
     newHackathon.url = _url;
-    var curId = this.curHackathonId;
+    var curId = parseInt(this.curHackathonId);
     newHackathon.id = curId;
     this.allHackathons.set(newHackathon.id, newHackathon);
     this.curHackathonId = curId + 1;
