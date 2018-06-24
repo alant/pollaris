@@ -24,63 +24,101 @@
     </div>
     <div class="teams-container">
     </div>
-    
-<div class="card" style="width: 50rem;">
-  <div class="card-body">
-    <form id="newHackathon">
-      <div class="form-group row">
-        <label for="hackathonName" class="col-sm-2 col-form-label">Hackathon Name</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control" id="hackathonName" value="">
+    <div class="tool button">
+        <button class="btn btn-primary" id="create-hackathon-button" data-toggle="modal" data-target="#create-hackathon-modal">
+          Create Hackathon
+        </button>
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="create-hackathon-modal">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create Team For Hackathon</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card" >
+          <div class="card-body">
+            <form id="newHackathon">
+              <div class="form-group row">
+                <label for="hackathonName" class="col-sm-5 col-form-label">Hackathon Name</label>
+                <div class="col-sm-7">
+                  <input type="text" class="form-control" id="hackathonName" value="">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="hackathonDescription" class="col-sm-5 col-form-label">Description</label>
+                <div class="col-sm-7">
+                  <textarea class="form-control" id="hackathonDescription" rows="3"></textarea>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="hackathonURL" class="col-sm-5 col-form-label">URL: </label>
+                <div class="col-sm-7">
+                  <input type="text" class="form-control" id="hackathonURL" value="">
+                </div>
+              </div>
+              <button class="btn btn-primary">Create Hackathon</button>
+            </form>
+          </div>
         </div>
       </div>
-      <div class="form-group row">
-        <label for="hackathonDescription" class="col-sm-2 col-form-label">Description</label>
-        <div class="col-sm-10">
-          <textarea class="form-control" id="hackathonDescription" rows="3"></textarea>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label for="hackathonURL" class="col-sm-2 col-form-label">URL: </label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control" id="hackathonURL" value="">
-        </div>
-      </div>
-      <button class="btn btn-primary" data-dismiss="modal">Submit</button>
-    </form>
+    </div>
   </div>
 </div>
-    <div class="card" style="width: 50rem;">
+<div class="tool button">
+    <button class="btn btn-primary" id="create-hackathon-button" data-toggle="modal" data-target="#create-team-modal">
+      Create Team
+    </button>
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" id="create-team-modal">
+<div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title">Create Team For Hackathon</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="card">
       <div class="card-body">
         <form id="newTeam">
           <div class="form-group row">
-            <label for="teamName" class="col-sm-2 col-form-label">Team Name</label>
-            <div class="col-sm-10">
+            <label for="teamName" class="col-sm-5 col-form-label">Team Name</label>
+            <div class="col-sm-7">
               <input type="text" class="form-control" id="teamName" value="">
             </div>
           </div>
           <div class="form-group row">
-            <label for="teamDesciption" class="col-sm-2 col-form-label">Team Description</label>
-            <div class="col-sm-10">
+            <label for="teamDesciption" class="col-sm-5 col-form-label">Team Description</label>
+            <div class="col-sm-7">
               <textarea class="form-control" id="teamDesciption" rows="3"></textarea>
             </div>
           </div>
           <div class="form-group row">
-            <label for="teamURL" class="col-sm-2 col-form-label">URL: </label>
-            <div class="col-sm-10">
+            <label for="teamURL" class="col-sm-5 col-form-label">URL: </label>
+            <div class="col-sm-7">
               <input type="text" class="form-control" id="teamURL" value="">
             </div>
           </div>
           <div class="form-group row">
-            <label for="hackathonId" class="col-sm-2 col-form-label">Hackthon Id</label>
-            <div class="col-sm-10">
+            <label for="hackathonId" class="col-sm-5 col-form-label">Hackthon Id</label>
+            <div class="col-sm-7">
               <input type="text" class="form-control" id="hackathonId" value="">
             </div>
           </div>
-          <button class="btn btn-primary">Submit</button>
+          <button class="btn btn-primary">Create Team</button>
         </form>
       </div>
     </div>
+  </div>
+  </div>
+</div>
+</div>
+</div>
   </main>
 
   <footer class="footer">
@@ -105,10 +143,6 @@
     console.log('=> document ready!');
     onSubmitForm("#newHackathon", "createHackathon");
     onSubmitForm("#newTeam", "createTeamForHackathon");
-
-    $('#create-hackathon-modal').on('shown.bs.modal', function () {
-      $('#create-hackathon-modal').trigger('focus')
-    });
 
     readCall("getCurHackathonId", []).then((resp, code, msg) => {
       console.log('====> util: ' + JSON.stringify(resp));
@@ -135,12 +169,11 @@
       });
     });
 
-    var hackathonId;
     $(document).on('click', "div.hackathon-card", function () {
-      hackathonId = $(this).attr("id");
-      console.log("===>>> clicked on div: " + hackathonId);
+      var divId = $(this).attr("id");
+      console.log("===>>> clicked on div: " + divId);
       $(".hackathon-container").html('');
-      loadAllTeams(hackathonId);
+      loadAllTeams(divId);
 
     });
 
@@ -166,33 +199,16 @@
               <div class="team-card" style="width: 18rem;">
                 <img class="card-img-top" src="../images/team${i % 4 + 1}.jpg" alt="Card image cap">
                   <div class="card-body">
-                    <h5 class="card-title">Team Name: <br>${team.teamName}</h5>
+                    <h5 class="card-title">Team Name: ${team.teamName}</h5>
                     <p class="card-text">Leader Addr: ${team.leader.substring(0, 7)}...</p>
-                    <button type="button" value="${i}" class="vote-btn btn btn-primary">Vote</button>
-                    <button type="button" value="${i}" class="cash-btn btn btn-success">Cashout</button>
+                    <h5 class="card-title">Team Members:</h5>
+                    ${innerElement}
                   </div>
               </div>
           `);
         });
 
       });
-
-      $(document).on('click', ".vote-btn", function () {
-        var divId = $(this).attr("value");
-        console.log("===>>>======== clicked on team: " + divId + " hackathon: " + hackathonId);
-        var callArgs = [divId, hackathonId];
-        console.log('=====> callArgs: ' + callArgs);
-        // helper to call a write call using nebpay
-        writeCall('0.01', "vote", callArgs);
-      });
-
-      $(document).on('click', ".cash-btn", function () {
-        var divId = $(this).attr("value");
-        console.log("===>>>======== clicked on cash: " + divId);
-        var callArgs = [divId, hackathonId];
-        writeCall('0', "withDraw", callArgs)
-      });
-
 
       // readCall("getAllTeamIds", []).then((resp, code, msg) => {
       //   console.log('====> util: ' + JSON.stringify(resp));
