@@ -76,7 +76,7 @@
     crossorigin="anonymous"></script>
   <!-- Nebulas stuff -->
   <script src="https://cdn.jsdelivr.net/npm/nebulas@0.5.2/dist/nebulas.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/nebpay.js@0.2.0/dist/nebPay.min.js"></script>
+  <script src=lib/nebPay.js></script>
 
 </body>
 <script src="./utils.js"></script>
@@ -92,6 +92,8 @@
   // var contractAddr = "n1tMicsrXs7m3fmtywC9zjMDVUBYJBAg5p3";
   // testnet
   var contractAddr = "n1ri9ifiYH1aFv1ZkSHXx2MnuxZAQs4UudB";
+  // serial number for checking tx
+  var serialNumber;
   var walletAddr = "n1JqiWKakmuymgXqCor9RxDnBkSiPbtmEjE";
 
   $(document).ready(function () {
@@ -112,10 +114,11 @@
 
       console.log("Handler for .submit() called.: " + JSON.stringify(team));
       event.preventDefault();
-      var callArgs = JSON.stringify([team.teamName, team.teamDesciption, team.teamURL]);
-
+      var callArgs = [team.teamName, team.teamDesciption, team.teamURL];
+      console.log('=====> callArgs: ' + callArgs);
+      var value = '0';
       // helper to call a write call using nebpay
-      writeCall("createTeam", callArgs, walletAddr, contractAddr);
+      writeCall(contractAddr, value, "createTeam", callArgs);
     });
   });
 </script>

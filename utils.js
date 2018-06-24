@@ -43,19 +43,13 @@ function readCall(functionName, callArgs, fromWalletAddr, toContractAddr) {
   });
 }
 
-function writeCall(functionName, callArgs, fromWalletAddr, toContractAddr) {
-  if (!fromWalletAddr) {
-    fromWalletAddr = new Wallet.Account(
-      '249e8e7a8ca2db4cbe29e2f2f42a2b2740b35408e36f26ed7a1c2561abcd3799'
-    ).getAddressString();
-  }
+function writeCall(toContractAddr, value, functionName, callArgs) {
   console.log("calling write function: "+functionName);
-  console.log('=> account: ' + fromWalletAddr);
   const writeCall = {
     function: functionName,
-    args: callArgs
+    args: JSON.stringify(callArgs)
   };
-  nebPay.call(toContractAddr, '0', writeCall.function, writeCall.args, {
+  nebPay.call(toContractAddr, value, writeCall.function, writeCall.args, {
     listener: (resp) => {
       console.log(`==> data return: ${JSON.stringify(resp)}`);
       if (JSON.stringify(resp) === 'Error: Transaction rejected by user') {
