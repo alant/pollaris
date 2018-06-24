@@ -24,6 +24,63 @@
     </div>
     <div class="teams-container">
     </div>
+    
+<div class="card" style="width: 50rem;">
+  <div class="card-body">
+    <form id="newHackathon">
+      <div class="form-group row">
+        <label for="hackathonName" class="col-sm-2 col-form-label">Hackathon Name</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="hackathonName" value="">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="hackathonDescription" class="col-sm-2 col-form-label">Description</label>
+        <div class="col-sm-10">
+          <textarea class="form-control" id="hackathonDescription" rows="3"></textarea>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="hackathonURL" class="col-sm-2 col-form-label">URL: </label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="hackathonURL" value="">
+        </div>
+      </div>
+      <button class="btn btn-primary" data-dismiss="modal">Submit</button>
+    </form>
+  </div>
+</div>
+    <div class="card" style="width: 50rem;">
+      <div class="card-body">
+        <form id="newTeam">
+          <div class="form-group row">
+            <label for="teamName" class="col-sm-2 col-form-label">Team Name</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="teamName" value="">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="teamDesciption" class="col-sm-2 col-form-label">Team Description</label>
+            <div class="col-sm-10">
+              <textarea class="form-control" id="teamDesciption" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="teamURL" class="col-sm-2 col-form-label">URL: </label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="teamURL" value="">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="hackathonId" class="col-sm-2 col-form-label">Hackthon Id</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="hackathonId" value="">
+            </div>
+          </div>
+          <button class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    </div>
   </main>
 
   <footer class="footer">
@@ -46,6 +103,13 @@
 <script>
   $(document).ready(function () {
     console.log('=> document ready!');
+    onSubmitForm("#newHackathon", "createHackathon");
+    onSubmitForm("#newTeam", "createTeamForHackathon");
+
+    $('#create-hackathon-modal').on('shown.bs.modal', function () {
+      $('#create-hackathon-modal').trigger('focus')
+    });
+
     readCall("getCurHackathonId", []).then((resp, code, msg) => {
       console.log('====> util: ' + JSON.stringify(resp));
       let pArray = [];
