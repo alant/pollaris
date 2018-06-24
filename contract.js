@@ -176,13 +176,25 @@ var NebHackathonContract = function() {
     sayHack: '',
     curHackerId: 0,
     curTeamId: 0,
-    curHackathonId: 0
+    curHackathonId: 0,
+    listOfAllTeamIds: {
+    parse: function(value) {
+      return JSON.parse(value);
+    },
+    stringify: function(o) {
+      return JSON.stringify(o);
+    }
+  }
   });
 };
 
 NebHackathonContract.prototype = {
   init: function() {
     this.sayHack = 'awesome hackathon';
+    this.curHackerId = 0;
+    this.curTeamId = 0;
+    this.curHackathonId = 0;
+    this.listOfAllTeamIds = [];
   },
   get: function() {
     var result = this.sayHack;
@@ -239,11 +251,16 @@ NebHackathonContract.prototype = {
     team.desc = _desc;
     team.url = _url;
     team.leader = from;
-    team.hackers = [].push(hacker);
+    var _hackers = [];
+    _hackers.push(hacker);
+    team.hackers = _hackers;
     var _curId = this.curTeamId;
     team.id = _curId;
     this.allTeams.put(_curId, team);
     this.curTeamId = _curId + 1;
+    var list = this.listOfAllTeamIds;
+    list.push(_curId);
+    this.listOfAllTeamIds = list;
   },
   getTeam: function(_id) {
     var team = this.allTeams.get(_id);
@@ -290,6 +307,16 @@ NebHackathonContract.prototype = {
   var team = this.allTeams.get(_id);
   var result = team.reward;
   return result;
+  },
+  getAllTeams: function() {
+    var allTeams = []
+    this.listOfAllTeamIds.forEach(function(_id){
+      allTeams.concat(this.allTeams.get(_id));
+    });
+    return allTeams;
+  },
+  getAllTeamIds: function() {
+    return this.listOfAllTeamIds;
   }
 };
 
