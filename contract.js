@@ -18,9 +18,9 @@ Hacker.prototype = {
       this.username = obj.username;
       this.address = obj.address;
     } else {
-      this.reputation = "";
-      this.username = "";
-      this.address = "";
+      this.reputation = '';
+      this.username = '';
+      this.address = '';
     }
   }
 };
@@ -91,7 +91,7 @@ Vote.prototype = {
 // Hackathon
 
 var Hackathon = function(obj) {
-  this.parse(obj);  
+  this.parse(obj);
 };
 
 Hackathon.prototype = {
@@ -122,7 +122,7 @@ Hackathon.prototype = {
       this.rewardPool = new BigNumber(0);
       this.sponsors = [];
       this.isFinished = false;
-      this.result = ''
+      this.result = '';
       this.allTeams = [];
       this.curTeamId = 0;
     }
@@ -213,7 +213,6 @@ Sponsor.prototype = {
 
 var NebHackathonContract = function() {
   LocalContractStorage.defineMapProperties(this, {
-
     allHackers: {
       parse: function(value) {
         return new Hacker(value);
@@ -222,7 +221,7 @@ var NebHackathonContract = function() {
         return o.toString();
       }
     },
-    
+
     allHackathons: {
       parse: function(value) {
         return new Hackathon(value);
@@ -330,9 +329,9 @@ NebHackathonContract.prototype = {
     }
 
     var hacker = this.allHackers.get(username);
-    if (hacker){
-      console.log("got this item");
-      throw new Error("hacker username has been occupied");
+    if (hacker) {
+      console.log('got this item');
+      throw new Error('hacker username has been occupied');
     } else {
       console.log("didn't this item");
     }
@@ -340,16 +339,26 @@ NebHackathonContract.prototype = {
     hacker = new Hacker();
     hacker.username = username;
     hacker.address = address;
-    console.log("before put hacker. created name: " + hacker.username + "address: " + hacker.address);
+    console.log(
+      'before put hacker. created name: ' +
+        hacker.username +
+        'address: ' +
+        hacker.address
+    );
     this.allHackers.put(username, hacker);
     var hacker2 = this.allHackers.get(username);
-    console.log("after put hacker2. created name: " + hacker2.username + "address: " + hacker2.address);
+    console.log(
+      'after put hacker2. created name: ' +
+        hacker2.username +
+        'address: ' +
+        hacker2.address
+    );
     var list = this.listOfAllHackerUsernames;
     list.push(username);
     this.listOfAllHackerUsernames = list;
   },
 
-  vote : function(teamId, hackathon_id) {
+  vote: function(teamId, hackathon_id) {
     var from = Blockchain.transaction.from;
     var value = Blockchain.transaction.value;
 
@@ -361,11 +370,13 @@ NebHackathonContract.prototype = {
 
     var hackathon = this.allHackathons.get(hackathon_id);
     if (hackathon.isFinished) {
-      throw new Error("can not vote finished hackathon");
+      throw new Error('can not vote finished hackathon');
     }
     hackathon.votes.push(vote);
     hackathon.rewardPool += value;
-    hackathon.allTeams[teamId].voteNum = new BigNumber(hackathon.allTeams[teamId].voteNum).add(new BigNumber(value));
+    hackathon.allTeams[teamId].voteNum = new BigNumber(
+      hackathon.allTeams[teamId].voteNum
+    ).add(new BigNumber(value));
 
     this.allHackathons.set(hackathon.id, hackathon);
   },
@@ -373,9 +384,11 @@ NebHackathonContract.prototype = {
   getHacker: function(username) {
     var hacker = this.allHackers.get(username);
     if (hacker) {
-      console.log("created name: " + hacker.username + "address: " + hacker.address);
+      console.log(
+        'created name: ' + hacker.username + 'address: ' + hacker.address
+      );
     } else {
-      console.log("fail to get item " + username);
+      console.log('fail to get item ' + username);
     }
     return hacker;
   },
@@ -386,7 +399,7 @@ NebHackathonContract.prototype = {
   createTeamForHackathon: function(_name, _desc, _url, _hackathon_id) {
     var hackathon = this.allHackathons.get(_hackathon_id);
     if (!hackathon) {
-      console.log("fail to get hackathon " + _hackathon_id);
+      console.log('fail to get hackathon ' + _hackathon_id);
     }
     var from = Blockchain.transaction.from;
     var hacker = this.allHackers.get(from);
@@ -405,11 +418,11 @@ NebHackathonContract.prototype = {
 
     var _curId = hackathon.curTeamId;
     team.id = _curId;
-    console.log("team: " + hackathon.allTeams);
+    console.log('team: ' + hackathon.allTeams);
     var allteams = hackathon.allTeams;
     allteams.push(team);
-    console.log("team: " + team);
-    console.log("team: " + hackathon.allTeams);
+    console.log('team: ' + team);
+    console.log('team: ' + hackathon.allTeams);
 
     hackathon.curTeamId = _curId + 1;
 
@@ -429,32 +442,60 @@ NebHackathonContract.prototype = {
     this.allHackathons.set(hackathon.id, hackathon);
   },
 
-  finishHackathon: function (_hackathon_id) {
+  finishHackathon: function(_hackathon_id) {
     var hackathon = this.allHackathons.get(_hackathon_id);
 
     if (hackathon.allTeams.length < 3) {
-      return "less then 3 teams fail to finish hackathon";
+      return 'less then 3 teams fail to finish hackathon';
     }
 
     hackathon.isFinished = true;
     // find the winner team
-    hackathon.allTeams.sort(function (a, b) {
-        return new BigNumber(a.voteNum).sub(new BigNumber(b.voteNum));
+    hackathon.allTeams.sort(function(a, b) {
+      return new BigNumber(a.voteNum).sub(new BigNumber(b.voteNum));
     });
 
     hackathon.allTeams[0].reward = new BigNumber(hackathon.rewardPool).mul(0.6);
     hackathon.allTeams[1].reward = new BigNumber(hackathon.rewardPool).mul(0.3);
     hackathon.allTeams[2].reward = new BigNumber(hackathon.rewardPool).mul(0.1);
 
-    var result = [hackathon.allTeams[0], hackathon.allTeams[1], hackathon.allTeams[2]];
+    var result = [
+      hackathon.allTeams[0],
+      hackathon.allTeams[1],
+      hackathon.allTeams[2]
+    ];
     // calculate the reward
     hackathon.result = result;
 
     this.allHackathons.set(hackathon.id, hackathon);
     return result;
   },
+  
+  withDraw: function(_teamId, _hackathon_id) {
+    var from = Blockchain.transaction.from;
+    if (_teamId > 2) {
+      throw new Error('only top 3 teams can withdraw');
+    }
+    var hackathon = this.allHackathons.get(_hackathon_id);
+    var leader = hackathon.allTeams[_teamId].leader;
+    if (from !== leader) {
+      throw new Error('only leader can withdraw');
+    }
+    var awardValue = hackathon.allTeams[_teamId].reward.floor();
+    if (awardValue.gt(new BigNumber(0))) {
+      var result = Blockchain.transfer(from, awardValue);
+      if (!result) {
+        throw new Error('Reward error.');
+      } else {
+        hackathon.allTeams[_teamId].reward = new BigNumber(0);
+        this.allHackathons.set(_hackathon_id, hackathon);
+      }
+    } else {
+      throw new Error('reward is zero');
+    }
+  },
 
-  getHackathonResult: function (_hackathon_id) {
+  getHackathonResult: function(_hackathon_id) {
     var hackathon = this.allHackathons.get(_hackathon_id);
     if (!hackathon.isFinished) {
       throw new Error('can not fetch result from on going hackathon');
@@ -462,7 +503,7 @@ NebHackathonContract.prototype = {
     return hackathon.result;
   },
 
-  getHackathonTeamFromHackathonId: function (_team_id, _hackathon_id) {
+  getHackathonTeamFromHackathonId: function(_team_id, _hackathon_id) {
     var hackathon = this.allHackathons.get(_hackathon_id);
     return hackathon.allTeams.get(_team_id);
   }
