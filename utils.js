@@ -17,8 +17,8 @@ function readCall(functionName, callArgs) {
     function: functionName,
     args: JSON.stringify(callArgs)
   };
-
-  neb.api.getNebState().then((state) => {
+  return new Promise(function(resolve, reject) {
+    neb.api.getNebState().then((state) => {
     console.log('getstate returned: ' + JSON.stringify(state));
     neb.api
       .call(
@@ -34,8 +34,11 @@ function readCall(functionName, callArgs) {
         console.log('contract returned: ' + JSON.stringify(resp));
         if (resp.execute_err.length > 0) {
           throw new Error(resp.execute_err);
+        } else {
+          resolve(resp, 100, 'success');
         }
       });
+    });
   });
 }
 
@@ -45,6 +48,9 @@ function writeCall(value, functionName, callArgs) {
     function: functionName,
     args: JSON.stringify(callArgs)
   };
+  var promise1 = new Promise(function(resolve, reject) {
+  setTimeout(resolve, 100, 'foo');
+  });
   nebPay.call(contractAddr, value, writeCall.function, writeCall.args, {
     listener: (resp) => {
       console.log(`==> data return: ${JSON.stringify(resp)}`);
