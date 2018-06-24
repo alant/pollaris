@@ -174,10 +174,17 @@ var NebHackathonContract = function() {
   });
   LocalContractStorage.defineProperties(this, {
     sayHack: '',
-    curHackerId: 0,
     curTeamId: 0,
     curHackathonId: 0,
     listOfAllTeamIds: {
+      parse: function(value) {
+        return JSON.parse(value);
+      },
+      stringify: function(o) {
+        return JSON.stringify(o);
+      }
+    },
+    listOfAllHackerUsernames: {
       parse: function(value) {
         return JSON.parse(value);
       },
@@ -191,10 +198,10 @@ var NebHackathonContract = function() {
 NebHackathonContract.prototype = {
   init: function() {
     this.sayHack = 'awesome hackathon';
-    this.curHackerId = 0;
     this.curTeamId = 0;
     this.curHackathonId = 0;
     this.listOfAllTeamIds = [];
+    this.listOfAllHackerUsernames = [];
   },
 
   // status getters
@@ -266,6 +273,9 @@ NebHackathonContract.prototype = {
     this.allHackers.put(username, hacker);
     var hacker2 = this.allHackers.get(username);
     console.log("after put hacker2. created name: " + hacker2.username + "address: " + hacker2.address);
+    var list = this.listOfAllHackerUsernames;
+    list.push(username);
+    this.listOfAllHackerUsernames = list;
   },
 
   getHacker: function(username) {
@@ -280,6 +290,9 @@ NebHackathonContract.prototype = {
       console.log("fail to get item " + username);
     }
     return hacker;
+  },
+  getAllHackerUsernames: function() {
+    return this.listOfAllHackerUsernames;
   },
 
   // team API
