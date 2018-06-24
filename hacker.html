@@ -29,6 +29,8 @@
   </header>
     <main id="home" role="main" class="inner cover">
         <h1 class="cover-heading">Create hacker</h1>
+        <button id="getBtn" class="btn btn-secondary">Test</button>
+
         <div class="card" style="width: 50rem;">
             <div class="card-body">
                 <form id="newHacker">
@@ -86,6 +88,21 @@
 
   $(document).ready(function () {
     console.log('=> document ready!');
+    $("#getBtn").click(function () {
+      console.log("getBtn clicked");
+      readCall("getAllHackerUsernames", []).then((resp, code, msg) => {
+        console.log('====> util: ' + JSON.stringify(resp));
+        let pArray = JSON.parse(resp.result).map((hackerUsername) => {
+            console.log("getting hacker " + hackerUsername);
+            return readCall("getHacker", [hackerUsername]);
+          });
+      const promises = Promise.all(pArray);
+      promises.then((results) => {
+        console.log(`==>promiseall: ${JSON.stringify(results)}`);
+    });
+    });
+    });
+
     $("#newHacker").submit(function (event) {
       // get all the inputs into an array.
       var $inputs = $('#newHacker :input');
