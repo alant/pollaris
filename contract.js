@@ -182,26 +182,6 @@ Hackathon.prototype = {
 
   getAllTeams: function() {
     return this.allTeams;
-  },
-
-  finishHackthon: function() {
-    if (this.allTeams.length < 3) {
-      return "less then 3 teams fail to finish hackathon";
-    }
-    this.isFinished = true;
-    // find the winner team
-    this.allTeams.sort(function (a, b) {
-        return new BigNumber(a.voteNum).sub(new BigNumber(b.voteNum));
-    });
-
-    this.allTeams[0].reward = new BigNumber(this.rewardPool).mul(0.6);
-    this.allTeams[1].reward = new BigNumber(this.rewardPool).mul(0.3);
-    this.allTeams[2].reward = new BigNumber(this.rewardPool).mul(0.1);
-
-    var result = [this.allTeams[0], this.allTeams[1], this.allTeams[2]];
-    // calculate the reward
-    this.result = result;
-    return result;
   }
 };
 
@@ -434,9 +414,27 @@ NebHackathonContract.prototype = {
 
   finishHackathon: function (_hackathon_id) {
     var hackathon = this.allHackathons.get(_hackathon_id);
-    var hackathonResult = hackathon.finishHackathon();
+
+    if (hackathon.allTeams.length < 3) {
+      return "less then 3 teams fail to finish hackathon";
+    }
+
+    hackathon.isFinished = true;
+    // find the winner team
+    hackathon.allTeams.sort(function (a, b) {
+        return new BigNumber(a.voteNum).sub(new BigNumber(b.voteNum));
+    });
+
+    hackathon.allTeams[0].reward = new BigNumber(hackathon.rewardPool).mul(0.6);
+    hackathon.allTeams[1].reward = new BigNumber(hackathon.rewardPool).mul(0.3);
+    hackathon.allTeams[2].reward = new BigNumber(hackathon.rewardPool).mul(0.1);
+
+    var result = [hackathon.allTeams[0], hackathon.allTeams[1], hackathon.allTeams[2]];
+    // calculate the reward
+    hackathon.result = result;
+
     this.allHackathons.set(hackathon.id, hackathon);
-    return hackathonResult;
+    return result;
   },
 
   getHackathonResult: function (_hackathon_id) {
