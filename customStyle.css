@@ -6,10 +6,24 @@ body {
   cursor: pointer;
 }
 
-.teams-container{
+.teams-container {
   display: flex;
 }
 
-.team-card{
+.team-card {
   padding:5px;
 }
+
+.hackathon-container {
+  display: flex;
+}
+
+.hackathon-card {
+  margin: 50px;
+}
+
+/*.hackathon-container .img {*/
+  /*display: block;*/
+  /*width: 100%;*/
+  /*height: auto;*/
+/*}*/
