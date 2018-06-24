@@ -10,7 +10,7 @@ Hacker.prototype = {
   toString: function() {
     return JSON.stringify(this);
   },
-
+  
   parse: function(text) {
     if (text) {
       var obj = JSON.parse(text);
@@ -35,7 +35,7 @@ Team.prototype = {
   toString: function() {
     return JSON.stringify(this);
   },
-
+  
   parse: function(text) {
     if (text) {
       var obj = JSON.parse(text);
@@ -68,7 +68,7 @@ Hackathon.prototype = {
   toString: function() {
     return JSON.stringify(this);
   },
-
+  
   parse: function(text) {
     if (text) {
       var obj = JSON.parse(text);
@@ -149,11 +149,9 @@ var NebHackathonContract = function() {
   LocalContractStorage.defineMapProperties(this, {
     allHackers: {
       parse: function(value) {
-        console.log(value);
         return new Hacker(value);
       },
       stringify: function(o) {
-        console.log(o);
         return o.toString();
       }
     },
@@ -180,13 +178,13 @@ var NebHackathonContract = function() {
     curTeamId: 0,
     curHackathonId: 0,
     listOfAllTeamIds: {
-    parse: function(value) {
-      return JSON.parse(value);
-    },
-    stringify: function(o) {
-      return JSON.stringify(o);
+      parse: function(value) {
+        return JSON.parse(value);
+      },
+      stringify: function(o) {
+        return JSON.stringify(o);
+      }
     }
-  }
   });
 };
 
@@ -205,41 +203,22 @@ NebHackathonContract.prototype = {
     var result = this.sayHack;
     return result;
   },
-  getDebugInfo: function() {
-    return this;
-  },
-  getAllHackathon: function() {
-    return this.allHackathons;
-  },
-  getAllHackers: function() {
-    return this.allHackers;
-  },
-  getAllTeams: function() {
-    return this.allTeams;
-  },
-  getTeamReward: function(_id) {
-    var team = this.teams.get(_id);
-    var result = team.reward;
-    return result;
-  },
-
-  // api
   createHackathon: function(hackathonInfo) {
     var newHackathon = new Hackathon(hackathonInfo);
     this.allHackathons.set(newHackathon.id, newHackathon);
     var result = this.allHackathons;
     return result;
   },
-
+  
   createHacker: function(username, address) {
     if (username === '' || address === '') {
       throw new Error('empty username / address');
     }
-    console.log("name.length checking");
+    
     if (username.length > 64 || address.length > 64) {
       throw new Error('username / address exceed limit length');
     }
-
+    
     var hacker = this.allHackers.get(username);
     if (hacker){
       console.log("got this item");
@@ -247,8 +226,7 @@ NebHackathonContract.prototype = {
     } else {
       console.log("didn't this item");
     }
-
-
+    
     hacker = new Hacker();
     hacker.username = username;
     hacker.address = address;
@@ -257,7 +235,7 @@ NebHackathonContract.prototype = {
     var hacker2 = this.allHackers.get(username);
     console.log("after put hacker2. created name: " + hacker2.username + "address: " + hacker2.address);
   },
-
+  
   getHacker: function(username) {
     username = username.trim();
     if (username === '') {
@@ -269,7 +247,6 @@ NebHackathonContract.prototype = {
     } else {
       console.log("fail to get item " + username);
     }
-
     return hacker;
   },
 
@@ -339,9 +316,9 @@ NebHackathonContract.prototype = {
     this.allTeams.put(_curId, team);
   },
   getTeamReward: function(_id) {
-  var team = this.allTeams.get(_id);
-  var result = team.reward;
-  return result;
+    var team = this.allTeams.get(_id);
+    var result = team.reward;
+    return result;
   },
   getAllTeams: function() {
     var allTeams = []
