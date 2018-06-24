@@ -76,7 +76,7 @@
     crossorigin="anonymous"></script>
   <!-- Nebulas stuff -->
   <script src="https://cdn.jsdelivr.net/npm/nebulas@0.5.2/dist/nebulas.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/nebpay.js@0.2.0/dist/nebPay.min.js"></script>
+  <script src=lib/nebPay.js></script>
 
 </body>
 <script>  
@@ -107,6 +107,8 @@
   // var contractAddr = "n1tMicsrXs7m3fmtywC9zjMDVUBYJBAg5p3";
   // testnet
   var contractAddr = "n1ri9ifiYH1aFv1ZkSHXx2MnuxZAQs4UudB";
+  // serial number for checking tx
+  var serialNumber;
 
   $(document).ready(function () {
     console.log('=> document ready!');
@@ -158,29 +160,44 @@
       var to = contractAddr;
       var value = '0';
       var callArgs = JSON.stringify([team.teamName, team.teamDesciption, team.teamURL]);
-      console.log('=> callArgs: ' + callArgs);
+      console.log('=====> callArgs: ' + callArgs);
       const call = {
         function: 'createTeam',
         args: callArgs
       };
-      nebPay.call(to, value, call.function, call.args, {
-        listener: (resp) => {
-          console.log(`==> data return: ${JSON.stringify(resp)}`);
-          if (JSON.stringify(resp) === 'Error: Transaction rejected by user') {
-            console.log('=> transaction rejected');
-            return;
-          }
-          $.get("https://pay.nebulas.io/api/testnet/pay/query?payId=" + resp, function (_resp) {
-            console.log('=> pay.nebulas.io return: ' + JSON.stringify(_resp));
-          })
-          // if (data.resp.txhash) {
-          //   const txhash = data.resp.txhash;
-          //   console.log(`=> this transaction's hash: ${txhash}`);
-          // } else {
-          //   console.log('=> transaction failed');
-          // }
-        }
+      var intervalQuery; //periodically query tx results
+
+      serialNumber = nebPay.call(to, value, call.function, call.args, {
+        qrcode: {
+          showQRCode: true
+        },
+        listener: callListner
       });
+      function callListner(resp) {
+        console.log('======> nebcall return: ' + JSON.stringify(resp));
+      }
+      console.log('==> seiralNumber: ' + serialNumber);
+      //Set a periodically query
+      var maxRetry = 15;
+      intervalQuery = setInterval(function () {
+        funcIntervalQuery();
+      }, 4000); //it's recommended that the query frequency is between 10-15s.
+
+      //Query the result of the transaction. queryPayInfo returns a Promise object.
+      function funcIntervalQuery() {
+        nebPay.queryPayInfo(serialNumber)   //search transaction result from server (result upload to server by app)
+          .then(function (resp) {
+            console.log("=> tx result: " + JSON.stringify(resp) + ", attempt " + maxRetry);   //resp is a JSON string
+            var respObject = JSON.parse(resp)
+            if (respObject.code === 0 || --maxRetry === 0) {
+              //The transaction is successful 
+              clearInterval(intervalQuery)    //stop the periodically query 
+            }
+          })
+          .catch(function (err) {
+            console.log(err);
+          });
+      }
 
     });
   });
