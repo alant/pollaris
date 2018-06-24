@@ -32,6 +32,8 @@
     <main id="home" role="main" class="inner cover">
       <h1 class="cover-heading">Create Hackathon</h1>
       <button id="getBtn" class="btn btn-secondary">Test</button>
+      <div class="hackathon-container">
+      </div>
 
       <div class="card" style="width: 50rem;">
         <div class="card-body">
@@ -59,13 +61,13 @@
         </div>
       </div>
 
-      <footer class="mastfoot mt-auto">
+      <!-- <footer class="mastfoot mt-auto">
         <div class="inner">
           Hackathon crowd voting system built on Nebulas mainnet
           <p>Brought to you by Pollaris</a>
           </p>
         </div>
-      </footer>
+      </footer> -->
   </div>
 
   <!-- Bootstrap CSS -->
@@ -97,6 +99,18 @@
         const promises = Promise.all(pArray);
         promises.then((results) => {
           console.log(`==>promiseall: ${JSON.stringify(results)}`);
+          results.forEach((hackathon, i) => {
+            $(".hackathon-container").append(`
+              <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="./images/hackathon${i + 1}.png" alt="Card image cap">
+                  <div class="card-body">
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                  </div>
+              </div>
+          `);
+          });
         });
       });
     });
