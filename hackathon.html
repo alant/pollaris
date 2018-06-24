@@ -114,23 +114,6 @@
       });
     });
 
-    $("#newHackathon").submit(function (event) {
-      // get all the inputs into an array.
-      var $inputs = $('#newHackathon :input');
-      // get an associative array of just the values.
-      var hackathon = {};
-      $inputs.each(function () {
-        hackathon[this.id] = $(this).val();
-      });
-
-      console.log("Handler for .submit() called.: " + JSON.stringify(hackathon));
-      event.preventDefault();
-      var callArgs = [hackathon.hackathonName,
-      hackathon.hackathonDescription, hackathon.hackathonURL];
-      console.log('=====> callArgs: ' + callArgs);
-      var value = '0';
-      // helper to call a write call using nebpay
-      writeCall(value, "createHackathon", callArgs);
-    });
+    onSubmitForm("#newHackathon", "createHackathon");
   });
 </script>
