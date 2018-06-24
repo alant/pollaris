@@ -19,7 +19,9 @@
     <header class="masthead mb-auto">
       <div class="inner">
         <nav class="nav nav-masthead justify-content-center" id="navMenu">
-          <a class="nav-link active" id="indexTab" href="index.html"><img height="24" width="24" src="images/icon.png"/></a>
+          <a class="nav-link active" id="indexTab" href="index.html">
+            <img height="24" width="24" src="images/icon.png" />
+          </a>
           <a class="nav-link active" id="homeTab" href="home.html">Home</a>
           <a class="nav-link" id="teamTab" href="team.html">Team</a>
           <a class="nav-link" id="hackathonTab" href="hackathon.html">Hackathon</a>
@@ -34,7 +36,6 @@
       <div class="card" style="width: 50rem;">
         <div class="card-body">
           <form id="newHackathon">
-
             <div class="form-group row">
               <label for="hackathonName" class="col-sm-2 col-form-label">Hackathon Name</label>
               <div class="col-sm-10">
@@ -57,8 +58,6 @@
           </form>
         </div>
       </div>
-
-
 
       <footer class="mastfoot mt-auto">
         <div class="inner">
@@ -90,6 +89,15 @@
       console.log("getBtn clicked");
       readCall("getCurHackathonId", []).then((resp, code, msg) => {
         console.log('====> util: ' + JSON.stringify(resp));
+        let pArray = [];
+        for (let i = 0; i < resp.result; i++) {
+          console.log('==> get :' + i);
+          pArray.push(readCall("getHackathon", [i]))
+        }
+        const promises = Promise.all(pArray);
+        promises.then((results) => {
+          console.log(`==>promiseall: ${JSON.stringify(results)}`);
+        });
       });
     });
 
@@ -105,7 +113,7 @@
       console.log("Handler for .submit() called.: " + JSON.stringify(hackathon));
       event.preventDefault();
       var callArgs = [hackathon.hackathonName,
-        hackathon.hackathonDescription, hackathon.hackathonURL];
+      hackathon.hackathonDescription, hackathon.hackathonURL];
       console.log('=====> callArgs: ' + callArgs);
       var value = '0';
       // helper to call a write call using nebpay
