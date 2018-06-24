@@ -4,10 +4,8 @@ const NebPay = require('nebpay');
 const HttpRequest = require('nebulas').HttpRequest;
 const Wallet = require('nebulas');
 const neb = new Wallet.Neb();
-const contractAddr = "n1qPSeL4Zb4Ptte1hBQHkmb3pxxszvY3BHs";
-const walletAddr = "n1JqiWKakmuymgXqCor9RxDnBkSiPbtmEjE";
 
-neb.setRequest(new HttpRequest('testnet.nebulas.io');
+neb.setRequest(new HttpRequest('https://testnet.nebulas.io');
 var nebPay = new NebPay();
 var gasLimit = 200000;
 var gasPrice = 1000000;
