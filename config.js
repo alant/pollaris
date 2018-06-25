@@ -10,4 +10,7 @@
 // const contractAddr = "n1nF8PTXGr2nvJURtkNo5uNAiZRHVru528d";
 // 16:07
 // const contractAddr = "n1fHPJdWvBdpkmJY9SWXEYyboRDyjB18vdH";
-const contractAddr = "n1vJ1Ef2Q9KacdaMDrutKVZWkrpEKvhDz68";
+// 21:00
+// const contractAddr = "n1vJ1Ef2Q9KacdaMDrutKVZWkrpEKvhDz68";
+// mainnet
+const contractAddr = "n1z8LRApWR1yaEYoWCwjaCVYB9zcT1HoQo4";
