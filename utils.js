@@ -6,7 +6,8 @@ const Wallet = require('nebulas');
 const neb = new Wallet.Neb();
 
 // neb.setRequest(new HttpRequest('http://localhost:8685'));
-neb.setRequest(new HttpRequest('https://testnet.nebulas.io'));
+// neb.setRequest(new HttpRequest('https://testnet.nebulas.io'));
+neb.setRequest(new HttpRequest('https://mainnet.nebulas.io'));
 var nebPay = new NebPay();
 var gasLimit = 200000;
 var gasPrice = 1000000;
